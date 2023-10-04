@@ -21,8 +21,11 @@ class Answers:
     SHOES = "shoes"
 
     # Answers for question 4
-    size = int
-    TYPE = ["US", "EU", "UK"]
+    # TYPE = ["US", "EU", "UK"]
+    TYPE_US = 'US'
+    TYPE_UK = 'UK'
+    TYPE_EU = 'EU'
+
     PREFER_NOT_TO_ANSWER = "I prefer not to answer"
 
     # Answers for question 5
