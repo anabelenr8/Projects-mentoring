@@ -9,7 +9,7 @@ def main_function():
         'Q2': Answers.PASTEL_AND_SOFT,
         'Q3': [Answers.TOPS, Answers.BOTTOMS, Answers.ACCESSORIES],
         'Q4': {'size': 14,
-               'type': Answers.TYPE_UK},
+               'type': Answers.TYPE_US},
         'Q5': Answers.NO
     }
 
@@ -18,13 +18,13 @@ def main_function():
     # Generate report based on survey answers
     report = Report(survey=user_submitted_survey)
     report_text = report.generate()  # Outputs report text which is generated based on survey answers
-
     # Iterate through the predetermined answers and print in the desired format
-    for question, selected_answer in predetermined_answers.items():
-        # Get the text associated with the selected answer
-        answer_text = report_text
-        # Print in the desired format
-        print(f'{question} = {selected_answer}\n{answer_text}\n')
+    # for question, selected_answer in predetermined_answers.items():
+    #     # Get the text associated with the selected answer
+    #     answer_text = report_text
+    #     # Print in the desired format
+    #     print(f'{question} = {selected_answer}\n{answer_text}\n')
+    print(report_text)
 
 
 if __name__ == "__main__":

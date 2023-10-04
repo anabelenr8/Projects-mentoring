@@ -14,7 +14,7 @@ class Report:
             return "Your clothing size is suitable."
 
     def generate(self) -> str:
-
+        # breakpoint()
         if self.survey.Q1 == Answers.CASUAL_AND_COMFORTABLE:
             self.text += 'Lorem ipsum 1. Question - ANSWER_1 dolor sit amet, consectetur adipiscing elit...'
         elif self.survey.Q1 == Answers.ELEGANT_AND_CHIC:
@@ -23,8 +23,8 @@ class Report:
             self.text += 'Sed vel bibendum tortor. Proin a aliquet tortor...'
         elif self.survey.Q1 == Answers.EDGY_AND_EXPERIMENTAL or self.survey.Q1 == Answers.NONE_OF_THE_ABOVE:
             self.text += 'Mauris urna nunc, eleifend id sapien eget, tincidunt venenatis risus...'
-
-            # Logic for generating the report text based on Q2 answer
+        # breakpoint()
+        # Logic for generating the report text based on Q2 answer
         if self.survey.Q2 == Answers.BRIGHT_AND_VIBRANT:
             self.text += 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
         elif self.survey.Q2 == Answers.NEUTRAL_AND_SUBDUED:
@@ -47,16 +47,15 @@ class Report:
             self.text += 'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...'
 
         # Logic for generating the report text based on Q4 answer
-        if self.survey.Q4 == Answers.TYPE_EU:
+        if self.survey.Q4['type'] == Answers.TYPE_EU:
             self.text += f" Your type is {Answers.TYPE_EU}"
-        elif self.survey.Q4 == Answers.TYPE_UK:
+        elif self.survey.Q4['type'] == Answers.TYPE_UK:
             self.text += f" Your type is {Answers.TYPE_UK}"
-        elif self.survey.Q4 == Answers.TYPE_US:
+        elif self.survey.Q4['type'] == Answers.TYPE_US:
             self.text += f" Your type is {Answers.TYPE_US}"
-            clothe_size = predetermined_answers['Q4']['size']
-            clothe_recommendation = self.calculate_recommendation(size=clothe_size)
-            self.text += f"Your clothing size is {self.calculate_recommendation(size=clothe_size)}. {clothe_recommendation}\n"
-
+            clothe_size = self.survey.Q4['size']
+            self.text += f"Your clothing size is {self.survey.Q4['size']} {self.calculate_recommendation(size=clothe_size)}"
+        # breakpoint()
         # Logic for generating the report text based on Q5 answer
         if self.survey.Q5 == Answers.NO:
             self.text += 'Nam maximus et massa laoreet congue...'
