@@ -2,6 +2,19 @@ from survey_report.answers import Answers
 from survey_report.survey import Survey
 
 
+class Texts:
+    CASUAL_AND_COMFORTABLE = 'Lorem ipsum 1. Question - ANSWER_1 dolor sit amet, consectetur adipiscing elit...'
+    ELEGANT_AND_CHIC = 'Lorem ipsum 1. Question - ANSWER_2 dolor sit amet, consectetur adipiscing elit...'
+    BOHEMIAN_AND_RELAXED = 'Sed vel bibendum tortor. Proin a aliquet tortor...'
+    EDGY_AND_EXPERIMENTAL = 'Mauris urna nunc, eleifend id sapien eget, tincidunt venenatis risus...'
+
+    BRIGHT_AND_VIBRANT = 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
+    NEUTRAL_AND_SUBDUED = 'In nisl ligula, porttitor vel lobortis vel, commodo quis mi...'
+    DARK_AND_MUTED = 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
+    PASTEL_AND_SOFT = 'In nisl ligula, porttitor vel lobortis vel, commodo quis mi...'
+    NO_ATTENTION = 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
+
+
 class Report:
     def __init__(self, survey: Survey):
         self.survey = survey
@@ -13,59 +26,71 @@ class Report:
         else:
             return "Your clothing size is suitable."
 
-    def generate(self) -> str:
-        # breakpoint()
-        if self.survey.Q1 == Answers.CASUAL_AND_COMFORTABLE:
-            self.text += 'Lorem ipsum 1. Question - ANSWER_1 dolor sit amet, consectetur adipiscing elit...'
-        elif self.survey.Q1 == Answers.ELEGANT_AND_CHIC:
-            self.text += 'Lorem ipsum 1. Question - ANSWER_2 dolor sit amet, consectetur adipiscing elit...'
-        elif self.survey.Q1 == Answers.BOHEMIAN_AND_RELAXED:
-            self.text += 'Sed vel bibendum tortor. Proin a aliquet tortor...'
-        elif self.survey.Q1 == Answers.EDGY_AND_EXPERIMENTAL or self.survey.Q1 == Answers.NONE_OF_THE_ABOVE:
-            self.text += 'Mauris urna nunc, eleifend id sapien eget, tincidunt venenatis risus...'
-        # breakpoint()
-        # Logic for generating the report text based on Q2 answer
-        if self.survey.Q2 == Answers.BRIGHT_AND_VIBRANT:
-            self.text += 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
-        elif self.survey.Q2 == Answers.NEUTRAL_AND_SUBDUED:
-            self.text += 'In nisl ligula, porttitor vel lobortis vel, commodo quis mi...'
-        elif self.survey.Q2 == Answers.DARK_AND_MUTED:
-            self.text += 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
-        elif self.survey.Q2 == Answers.PASTEL_AND_SOFT:
-            self.text += 'In nisl ligula, porttitor vel lobortis vel, commodo quis mi...'
-        elif self.survey.Q2 == Answers.NO_ATTENTION:
-            self.text += 'Mauris urna nunc, eleifend id sapien eget, 2. Question - ANSWER_1 or ANSWER_3 tincidunt venenatis risus...'
+    def how_you_define_your_style(self):
 
-            # Logic for generating the report text based on Q3 answer
+        texts = {
+            Answers.CASUAL_AND_COMFORTABLE: Texts.CASUAL_AND_COMFORTABLE,
+            Answers.ELEGANT_AND_CHIC: Texts.ELEGANT_AND_CHIC,
+            Answers.BOHEMIAN_AND_RELAXED: Texts.BOHEMIAN_AND_RELAXED,
+            Answers.EDGY_AND_EXPERIMENTAL: Texts.EDGY_AND_EXPERIMENTAL
+        }
+
+        self.text += texts[self.survey.Q1]
+
+    def describe_your_color_palette(self):
+
+        texts = {
+            Answers.BRIGHT_AND_VIBRANT: Texts.BRIGHT_AND_VIBRANT,
+            Answers.NEUTRAL_AND_SUBDUED: Texts.NEUTRAL_AND_SUBDUED,
+            Answers.DARK_AND_MUTED: Texts.DARK_AND_MUTED,
+            Answers.PASTEL_AND_SOFT: Texts.PASTEL_AND_SOFT,
+            Answers.NO_ATTENTION: Texts.NO_ATTENTION
+        }
+
+        self.text += texts[self.survey.Q2]
+
+    def shopping_category(self):
         if set(self.survey.Q3) == {Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES}:
             self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sollicitudin leo in 3. Question - ANSWER_4, ANSWER_3 and ANSWER_1 lectus cursus tincidunt...'
         elif set(self.survey.Q3) == {Answers.BOTTOMS, Answers.SHOES}:
             self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dictum, dui non auctor tristique, odio sem 3. Question - ANSWER_2 and ANSWER_5 convallis lacus...'
-        elif set(self.survey.Q3) & {Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES}:
+        if set(self.survey.Q3) & {Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES}:
             self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras viverra luctus nunc, non ultrices mauris molestie vitae...'
         else:
             self.text += 'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...'
 
-        # Logic for generating the report text based on Q4 answer
+    def size_and_type(self):
         if self.survey.Q4['type'] == Answers.TYPE_EU:
             self.text += f" Your type is {Answers.TYPE_EU}"
         elif self.survey.Q4['type'] == Answers.TYPE_UK:
             self.text += f" Your type is {Answers.TYPE_UK}"
-        elif self.survey.Q4['type'] == Answers.TYPE_US:
+        if self.survey.Q4['type'] == Answers.TYPE_US:
             self.text += f" Your type is {Answers.TYPE_US}"
             clothe_size = self.survey.Q4['size']
             self.text += f"Your clothing size is {self.survey.Q4['size']} {self.calculate_recommendation(size=clothe_size)}"
-        # breakpoint()
-        # Logic for generating the report text based on Q5 answer
-        if self.survey.Q5 == Answers.NO:
+
+    def preference_on_recycling_material(self):
+        if self.survey.Q5['answer'] == Answers.NO:
             self.text += 'Nam maximus et massa laoreet congue...'
-        elif self.survey.Q5 == Answers.DONT_KNOW:
+        elif self.survey.Q5['answer'] == Answers.DONT_KNOW:
             self.text += 'Phasellus ac sem ornare, ANSWER_I_DONT_KNOW euismod tellus id, sagittis felis...'
-        if self.survey.Q5 == Answers.YES and {2, 3}.issubset(self.survey.Q5):
+        if (
+                self.survey.Q5['answer'] == Answers.YES
+                and {Answers.CHOICE_ORGANIC, Answers.CHOICE_RECYCLING
+                     }.issubset(self.survey.Q5['choices'])
+        ):
             self.text += 'Mauris viverra lobortis ante, eget faucibus felis pulvinar et...'
-        if self.survey.Q5 == Answers.YES and {1, 4}.issubset(self.survey.Q5):
+        if self.survey.Q5['answer'] == Answers.YES and {Answers.CHOICE_WATER, Answers.CHOICE_NOT_SURE}.issubset(
+                self.survey.Q5):
             self.text += 'Fusce sem est, maximus ac efficitur in, accumsan eu libero...'
         else:
             self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...'
+
+    def generate(self) -> str:
+        self.how_you_define_your_style()
+        self.describe_your_color_palette()
+        self.shopping_category()
+        self.size_and_type()
+        self.preference_on_recycling_material()
 
         return self.text
