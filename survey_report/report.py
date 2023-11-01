@@ -51,13 +51,14 @@ class Report:
 
     def shopping_category(self):
         if set(self.survey.Q3) == {Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES}:
-            self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sollicitudin leo in 3. Question - ANSWER_4, ANSWER_3 and ANSWER_1 lectus cursus tincidunt...'
+            self.text += Answers.NO_ATTENTION
         elif set(self.survey.Q3) == {Answers.BOTTOMS, Answers.SHOES}:
-            self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dictum, dui non auctor tristique, odio sem 3. Question - ANSWER_2 and ANSWER_5 convallis lacus...'
+            self.text += Answers.BOTTOMS and Answers.SHOES
         if set(self.survey.Q3) & {Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES}:
-            self.text += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras viverra luctus nunc, non ultrices mauris molestie vitae...'
+            self.text += Answers.TOPS and Answers.DRESSES_AND_JUMPSUITS and Answers.ACCESSORIES
         else:
-            self.text += 'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...'
+            self.text += 'Consectetur adipiscing elit, sed do eiusmod tempor' \
+                         ' incididunt ut labore et dolore magna aliqua...'
 
     def size_and_type(self):
         if self.survey.Q4['type'] == Answers.TYPE_EU:
@@ -67,19 +68,20 @@ class Report:
         if self.survey.Q4['type'] == Answers.TYPE_US:
             self.text += f" Your type is {Answers.TYPE_US}"
             clothe_size = self.survey.Q4['size']
-            self.text += f"Your clothing size is {self.survey.Q4['size']} {self.calculate_recommendation(size=clothe_size)}"
+            self.text += f"Your clothing size is" \
+                         f" {self.survey.Q4['size']} {self.calculate_recommendation(size=clothe_size)}"
 
     def preference_on_recycling_material(self):
         if self.survey.Q5['answer'] == Answers.NO:
-            self.text += 'Nam maximus et massa laoreet congue...'
+            self.text += Answers.NO
         elif self.survey.Q5['answer'] == Answers.DONT_KNOW:
-            self.text += 'Phasellus ac sem ornare, ANSWER_I_DONT_KNOW euismod tellus id, sagittis felis...'
+            self.text += Answers.DONT_KNOW
         if (
                 self.survey.Q5['answer'] == Answers.YES
                 and {Answers.CHOICE_ORGANIC, Answers.CHOICE_RECYCLING
                      }.issubset(self.survey.Q5['choices'])
         ):
-            self.text += 'Mauris viverra lobortis ante, eget faucibus felis pulvinar et...'
+            self.text += Answers.YES and Answers.CHOICE_ORGANIC and Answers.CHOICE_RECYCLING
         if self.survey.Q5['answer'] == Answers.YES and {Answers.CHOICE_WATER, Answers.CHOICE_NOT_SURE}.issubset(
                 self.survey.Q5):
             self.text += 'Fusce sem est, maximus ac efficitur in, accumsan eu libero...'
