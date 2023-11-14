@@ -84,7 +84,8 @@ class TestReportGeneration(unittest.TestCase):
 
     def test_shopping_category(self):
         survey = Survey(Q1=Answers.CASUAL_AND_COMFORTABLE, Q2=Answers.NO_ATTENTION,
-                        Q3=[Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES], Q4={Answers.TYPE_US, 14},
+                        Q3=[Answers.TOPS, Answers.DRESSES_AND_JUMPSUITS, Answers.ACCESSORIES],
+                        Q4={Answers.TYPE_US, 14},
                         Q5={'answer': Answers.YES, 'choices': Answers.CHOICE_ORGANIC})
         report = Report(survey=survey)
         report_text = report.generate()
