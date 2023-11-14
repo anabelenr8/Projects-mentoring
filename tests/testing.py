@@ -178,8 +178,8 @@ class TestReportGeneration(unittest.TestCase):
         expected_text = 'Fusce sem est, maximus ac efficitur in, accumsan eu libero...'
         self.assertIn(expected_text, report_text)
 
-    def assert_report_for_answer(self, answer, expected_report_text):
-        survey = Survey(**answer)
+    def assert_report_for_answer(self, predetermined_answers, expected_report_text):
+        survey = Survey(**predetermined_answers)
         report = Report(survey=survey)
         report_text = report.generate()
         self.assertEqual(report_text, expected_report_text)
