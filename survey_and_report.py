@@ -12,7 +12,8 @@ def main_function():
         'Q2': Answers.BRIGHT_AND_VIBRANT,
         'Q3': [Answers.TOPS, Answers.BOTTOMS, Answers.ACCESSORIES],
         'Q4': {'size': 14, 'type': Answers.TYPE_US},
-        'Q5': {'answer': Answers.YES, 'choices': [Answers.CHOICE_ORGANIC]}
+        'Q5': {'answer': Answers.YES, 'choices': [Answers.CHOICE_ORGANIC,
+                                                  Answers.CHOICE_RECYCLING]}
     }
 
     report = Report(survey=Survey(**predetermined_answers))

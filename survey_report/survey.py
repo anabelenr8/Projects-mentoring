@@ -1,5 +1,5 @@
 class Survey:
-    def __init__(self, Q1=None, Q2=None, Q3=None, Q4=None, Q5=None):
+    def __init__(self, Q1, Q2, Q3, Q4, Q5):
         self.Q1 = Q1
         self.Q2 = Q2
         self.Q3 = Q3
