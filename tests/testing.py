@@ -327,11 +327,10 @@ class TestReportGeneration(unittest.TestCase):
                     }
                 },
                 'expected_text': (
-                    'Nam maximus et massa laoreet congue. '
-                    'In facilisis egestas neque.'
-                    ' Nullam ac euismod nibh.'
-                    'ANSWER_NO Aenean pulvinar lacinia ligula, '
-                    'nec lobortis magna accumsan sed.'
+                    'Nam maximus et massa laoreet congue.'
+                    'In facilisis egestas neque.Nullam ac euismod nibh.'
+                    'ANSWER_NO Aenean pulvinar lacinia ligula, nec lobortis '
+                    'magna accumsan sed.'
                 ),
             },
             {
@@ -346,12 +345,14 @@ class TestReportGeneration(unittest.TestCase):
                     }
                 },
                 'expected_text': (
-                    'Phasellus ac sem ornare, ANSWER_I_DONT_KNOW'
-                    ' euismod tellus id, sagittis felis.Nullam '
-                    'viverra est nibh, et dignissim elit '
-                    'tincidunt nec. Integer vel dolor aliquam, '
-                    'eleifend metus in, tincidunt erat.'
-                    ' Nam id facilisis tortor.'
+                    'Consectetur adipiscing elit,'
+                    ' Phasellus ac sem ornare,'
+                    'ANSWER_I_DONT_KNOW euismod tellus id, '
+                    'sagittis felis.Nullam viverra'
+                    ' est nibh, et dignissim elit tincidunt nec.'
+                    'Integer vel dolor aliquam,'
+                    ' eleifend metus in, tincidunt erat.Nam id '
+                    'facilisis tortor.'
                 ),
             },
             {
@@ -368,11 +369,10 @@ class TestReportGeneration(unittest.TestCase):
                     }
                 },
                 'expected_text': (
-                    'Mauris viverra lobortis ante, '
-                    'eget faucibus felis pulvinar et.'
-                    ' Suspendisse urna diam, '
-                    'nec tincidunt ornare, convallis '
-                    'condimentum nisi.'
+                    'Mauris viverra lobortis ante, eget faucibus felis'
+                    ' pulvinar et. Suspendisse urna diam, ANSWER_YES and '
+                    'ANSWER_YES_CHOICE_2, ANSWER_YES_CHOICE_3 elementum nec '
+                    'tincidunt ornare, convallis condimentum nisi.'
                 ),
             },
             {
@@ -399,11 +399,14 @@ class TestReportGeneration(unittest.TestCase):
         for test_case in test_cases:
             report = Report(
                 survey=Survey(**test_case['predetermined_answers'])
+
             )
-            self.assertIn(
-                test_case['expected_text'],
-                report.generate()
-            )
+
+        self.assertIn(
+            test_case['expected_text'],
+            report.generate()
+
+        )
 
 
 if __name__ == '__main__':

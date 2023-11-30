@@ -66,17 +66,16 @@ class Texts:
         ' Vestibulum magna urna, volutpat vitae auctor non, pharetra vel leo.'
     )
     ANSWER_NO = (
-        'Nam maximus et massa laoreet congue. In facilisis egestas neque.'
-        ' Nullam ac euismod nibh.'
-        'ANSWER_NO Aenean pulvinar lacinia ligula, '
-        'nec lobortis magna accumsan sed.'
+        'Nam maximus et massa laoreet congue.'
+        'In facilisis egestas neque.Nullam ac euismod nibh.'
+        'ANSWER_NO Aenean pulvinar lacinia ligula, nec lobortis '
+        'magna accumsan sed.'
     )
     DONT_KNOW = (
-        'Phasellus ac sem ornare, '
-        'ANSWER_I_DONT_KNOW euismod tellus id, sagittis felis. '
-        'Nullam viverra est nibh, et dignissim elit tincidunt nec. '
-        'Integer vel dolor aliquam, '
-        'eleifend metus in, tincidunt erat. Nam id facilisis tortor.'
+        'Consectetur adipiscing elit, Phasellus ac sem ornare,'
+        'ANSWER_I_DONT_KNOW euismod tellus id, sagittis felis.Nullam viverra'
+        ' est nibh, et dignissim elit tincidunt nec.Integer vel dolor aliquam,'
+        ' eleifend metus in, tincidunt erat.Nam id facilisis tortor.'
     )
     ORGANIC_AND_RECYCLING = (
         'Mauris viverra lobortis ante, eget faucibus felis pulvinar et. '
