@@ -1,3 +1,4 @@
+import copy
 import unittest
 
 from survey_report.answers import Answers
@@ -271,8 +272,6 @@ class TestReportGeneration(unittest.TestCase):
 
     def test_size_and_type(self):
 
-        import copy
-
         test_data = copy.deepcopy(self.test_data)
 
         predetermined_answers = test_data['predetermined_answers']
@@ -402,11 +401,11 @@ class TestReportGeneration(unittest.TestCase):
 
             )
 
-        self.assertIn(
-            test_case['expected_text'],
-            report.generate()
+            self.assertIn(
+                test_case['expected_text'],
+                report.generate()
 
-        )
+            )
 
 
 if __name__ == '__main__':
