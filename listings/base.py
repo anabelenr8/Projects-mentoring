@@ -1,15 +1,5 @@
-# response: requests.Response = requests.post(
-#     'https://api.pythonic.me/v1/app/',
-#     headers={
-#         'Pythonic-Api-V1-Key': 'ApM8MUgSIFefsHDSSqoVKTHtEvZ'
-#                                'ntOBlUW7gidnRtfazdFY4YD9EBxS'
-#                                '54sdvIfD9NGASOJsaK2xeyXyZsw9BLw'
-#     }
-# )
-# print(response.json())
-
-
 import json
+import os
 
 import requests
 
@@ -39,21 +29,43 @@ class ListingsRequest:
             'Authorization': f'Bearer {self.api_token}',
         }
 
+    def save_to_file(self, directory, filename, data):
+        filepath = os.path.join(directory, filename)
+        with open(filepath, 'w') as file:
+            file.write(json.dumps(data, indent=4))
+
     def create_app(self):
         url = 'https://api.pythonic.me/v1/app/'
-        response = requests.post(url,
-                                 headers={'Pythonic-Api-V1-Key': api_v1_key})
+        response = requests.post \
+            (url, headers={'Pythonic-Api-V1-Key': api_v1_key})
         return response.json()
 
     def get_digital_listings(self):
         url = 'https://api.pythonic.me/v1/listings/?listing_type=digital'
         response = requests.get(url, headers=self.set_headers())
-        return response
+        digital_listings = response.json()
+
+        directory = 'text_files'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        filename = 'digital_listings.txt'
+        self.save_to_file(directory, filename, digital_listings)
+
+        return digital_listings
 
     def get_soft_tag_listings(self):
         url = 'https://api.pythonic.me/v1/listings/?tag=soft'
         response = requests.get(url, headers=self.set_headers())
-        return json.dumps(response.json(), indent=4)
+        soft_tags = response.json()
+
+        directory = 'text_files'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        filename = 'soft_tags.txt'
+        self.save_to_file(directory, filename, digital_listings)
+        return soft_tags
 
     def get_usd_listings_under_20(self):
         url = 'https://api.pythonic.me/v1/listings/'
@@ -71,14 +83,32 @@ class ListingsRequest:
                                  and listing.get('price_amount') is not None
                                  and float(listing['price_amount']) <= 20]
 
-        return json.dumps(filtered_listings, indent=4)
+            directory = 'text_files'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
 
-        # if else filter listing empty list
+            filename = 'usd_listing_under_20.txt'
+            self.save_to_file(directory, filename, filtered_listings)
+            return filtered_listings
+
+        else:
+            print(f"Failed to fetch listings. Status Code:"
+                  f" {response.status_code}")
+            return []
 
     def get_blanket_search_listings(self):
         url = 'https://api.pythonic.me/v1/listings/?search=blanket'
         response = requests.get(url, headers=self.set_headers())
-        return json.dumps(response.json(), indent=4)
+        blanket = response.json()
+
+        directory = 'text_files'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        filename = 'blanket.txt'
+        self.save_to_file(directory, filename, blanket)
+
+        return blanket
 
     def get_cotton_eur_listings(self):
         url = 'https://api.pythonic.me/v1/listings/'
@@ -94,7 +124,19 @@ class ListingsRequest:
                                  listing.get('tags') == ['cotton']
                                  and listing.get('currency_code') == 'eur']
 
-            return json.dumps(filtered_listings, indent=4)
+            directory = 'text_files'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            filename = 'cotton_eur_listing.txt'
+            self.save_to_file(directory, filename, filtered_listings)
+
+            return filtered_listings
+
+        else:
+            print(f"Failed to fetch listings. Status Code:"
+                  f" {response.status_code}")
+            return []
 
 
 listings_request = ListingsRequest(api_key=api_key, api_token=api_token)
