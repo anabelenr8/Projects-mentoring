@@ -53,7 +53,7 @@ class ListingsRequest:
 
     def create_app(self) -> JsonData:
         response = requests.post(
-            url=f'{self.hostname} /app/',
+            url=f'{self.hostname}/app/',
             headers={'Pythonic-Api-V1-Key': api_v1_key}
         )
         return response.json()
@@ -64,7 +64,7 @@ class ListingsRequest:
     ) -> JsonData:
         try:
             res: requests.Response = requests.get(
-                url=f'{self.hostname} /listings/',
+                url=f'{self.hostname}/listings/',
                 headers=self.set_headers(),
                 params=params
             )
@@ -131,7 +131,7 @@ api = ListingsRequest(
     api_token=api_token,
     hostname=hostname
 )
-# app_creation_response = api.create_app()
+app_creation_response = api.create_app()
 
 for listings in [
     {

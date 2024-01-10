@@ -1,1 +1,32 @@
-[]
+[
+    {
+        "listing_id": "53731f65-8fa6-49ee-8a06-a575e84668ea",
+        "user_id": "2b79dbcb-f374-4d4f-a071-da82cf94d58e",
+        "shop_id": "a41a238a-f460-48f4-a364-098e6cb812a8",
+        "title": "Children's Toys - Significant",
+        "description": "This is a region children's toys. Generation American total model common my participant. ",
+        "status": "private",
+        "quantity": 56,
+        "shop_section_id": 1,
+        "featured_rank": 58,
+        "listing_type": "physical",
+        "non_taxable": true,
+        "is_taxable": false,
+        "tags": [
+            "cotton"
+        ],
+        "shipping_profile_id": 5,
+        "return_policy_id": 9,
+        "who_made": "collective",
+        "price_amount": "54.86",
+        "currency_code": "eur",
+        "images": [
+            "https://api.pythonic.me/static/listings/img/9.png",
+            "https://api.pythonic.me/static/listings/img/16.png",
+            "https://api.pythonic.me/static/listings/img/3.png",
+            "https://api.pythonic.me/static/listings/img/17.png",
+            "https://api.pythonic.me/static/listings/img/3.png"
+        ],
+        "video": "https://api.pythonic.me/static/listings/video/1.mp4"
+    }
+]
