@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Dict, Any, Union, List
 
 import requests
 
@@ -11,10 +12,31 @@ api_v1_key = 'ApM8MUgSIFefsHDSSqoVKTHtEvZntOBl' \
              'UW7gidnRtfazdFY4YD9EBxS54sdvIfD9N' \
              'GASOJsaK2xeyXyZsw9BLw'
 
+hostname = 'https://api.pythonic.me/v1'
+
+JsonData = List[Dict[str, Any]]
+
+
+def save_to_file(listings: Dict[str, Union[JsonData, str]]):
+    directory = 'text_files'
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    filepath = os.path.join(directory, listings['filename'])
+    with open(filepath, 'w') as file:
+        file.write(json.dumps(listings['data'], indent=4))
+
 
 class ListingsRequest:
 
-    def __init__(self, api_key, api_token):
+    def __init__(
+            self,
+            api_key: str,
+            api_token: str,
+            hostname: str
+    ):
+        self.hostname = hostname
         self.api_key = api_key
         self.api_token = api_token
 
@@ -29,127 +51,108 @@ class ListingsRequest:
             'Authorization': f'Bearer {self.api_token}',
         }
 
-    def save_to_file(self, directory, filename, data):
-        filepath = os.path.join(directory, filename)
-        with open(filepath, 'w') as file:
-            file.write(json.dumps(data, indent=4))
-
-    def create_app(self):
-        url = 'https://api.pythonic.me/v1/app/'
-        response = requests.post \
-            (url, headers={'Pythonic-Api-V1-Key': api_v1_key})
+    def create_app(self) -> JsonData:
+        response = requests.post(
+            url=f'{self.hostname} /app/',
+            headers={'Pythonic-Api-V1-Key': api_v1_key}
+        )
         return response.json()
 
-    def get_digital_listings(self):
-        url = 'https://api.pythonic.me/v1/listings/?listing_type=digital'
-        response = requests.get(url, headers=self.set_headers())
-        digital_listings = response.json()
-
-        directory = 'text_files'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
-        filename = 'digital_listings.txt'
-        self.save_to_file(directory, filename, digital_listings)
-
-        return digital_listings
-
-    def get_soft_tag_listings(self):
-        url = 'https://api.pythonic.me/v1/listings/?tag=soft'
-        response = requests.get(url, headers=self.set_headers())
-        soft_tags = response.json()
-
-        directory = 'text_files'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
-        filename = 'soft_tags.txt'
-        self.save_to_file(directory, filename, digital_listings)
-        return soft_tags
-
-    def get_usd_listings_under_20(self):
-        url = 'https://api.pythonic.me/v1/listings/'
-        params = {
-            'currency_code': 'usd',
-            'price_amount': 20
-        }
-        response = requests.get(url, headers=self.set_headers(), params=params)
-
-        if response.status_code == 200:
-            all_listings = response.json()
-
-            filtered_listings = [listing for listing in all_listings if
-                                 listing.get('currency_code') == 'usd'
-                                 and listing.get('price_amount') is not None
-                                 and float(listing['price_amount']) <= 20]
-
-            directory = 'text_files'
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-            filename = 'usd_listing_under_20.txt'
-            self.save_to_file(directory, filename, filtered_listings)
-            return filtered_listings
-
-        else:
-            print(f"Failed to fetch listings. Status Code:"
-                  f" {response.status_code}")
+    def get_listings(
+            self,
+            params: Dict[str, str]
+    ) -> JsonData:
+        try:
+            res: requests.Response = requests.get(
+                url=f'{self.hostname} /listings/',
+                headers=self.set_headers(),
+                params=params
+            )
+            return res.json()
+        except requests.exceptions.RequestException as e:
+            print(f'exception: {e}')
             return []
 
-    def get_blanket_search_listings(self):
-        url = 'https://api.pythonic.me/v1/listings/?search=blanket'
-        response = requests.get(url, headers=self.set_headers())
-        blanket = response.json()
+    def get_digital_listings(self) -> JsonData:
+        return self.get_listings(
+            params={
+                'listing_type': 'digital'
+            }
+        )
 
-        directory = 'text_files'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+    def get_soft_tag_listings(self) -> JsonData:
+        return self.get_listings(
+            params={
+                'tag': 'soft'
+            }
+        )
 
-        filename = 'blanket.txt'
-        self.save_to_file(directory, filename, blanket)
+    def get_usd_listings_under_20(self) -> JsonData:
+        usd_listings: JsonData = (
+            self.get_listings(
+                params={
+                    'currency_code': 'usd',
+                    'price_amount': 20
+                }
+            )
+        )
+        return [
+            listing for listing in usd_listings if
+            listing.get('currency_code') == 'usd'
+            and listing.get('price_amount') is not None
+            and float(listing['price_amount']) <= 20.00
+        ]
 
-        return blanket
+    def get_blanket_search_listings(self) -> JsonData:
+        return self.get_listings(
+            params={
+                'search': 'blanket'
+            }
+        )
 
-    def get_cotton_eur_listings(self):
-        url = 'https://api.pythonic.me/v1/listings/'
-        params = {
-            'tags': ['cotton'],
-            'currency_code': 'eur'
-        }
-        response = requests.get(url, headers=self.set_headers(), params=params)
-
-        if response.status_code == 200:
-            all_listings = response.json()
-            filtered_listings = [listing for listing in all_listings if
-                                 listing.get('tags') == ['cotton']
-                                 and listing.get('currency_code') == 'eur']
-
-            directory = 'text_files'
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-            filename = 'cotton_eur_listing.txt'
-            self.save_to_file(directory, filename, filtered_listings)
-
-            return filtered_listings
-
-        else:
-            print(f"Failed to fetch listings. Status Code:"
-                  f" {response.status_code}")
-            return []
+    def get_cotton_eur_listings(self) -> JsonData:
+        cotton_listings: JsonData = (
+            self.get_listings(
+                params={
+                    'tags': ['cotton'],
+                    'currency_code': 'eur'
+                }
+            )
+        )
+        return [
+            listing for listing in cotton_listings if
+            listing.get('tags') == ['cotton']
+            and listing.get('currency_code') == 'eur'
+        ]
 
 
-listings_request = ListingsRequest(api_key=api_key, api_token=api_token)
-app_creation_response = listings_request.create_app()
-digital_listings = listings_request.get_digital_listings()
-soft_tags = listings_request.get_soft_tag_listings()
-usd_listing_under_20 = listings_request.get_usd_listings_under_20()
-blanket = listings_request.get_blanket_search_listings()
-cotton_eur = listings_request.get_cotton_eur_listings()
+api = ListingsRequest(
+    api_key=api_key,
+    api_token=api_token,
+    hostname=hostname
+)
+# app_creation_response = api.create_app()
 
-print("App Creation Response:", app_creation_response)
-print("Digital Listings:", digital_listings)
-print("Soft Tags:", soft_tags)
-print("Listing under 20 USD:", usd_listing_under_20)
-print("Blanket:", blanket)
-print("Cotton EUR:", cotton_eur)
+for listings in [
+    {
+        'data': api.get_digital_listings(),
+        'filename': 'digital_listings_txt'
+    },
+    {
+        'data': api.get_soft_tag_listings(),
+        'filename': 'soft_tags_txt'
+    },
+    {
+        'data': api.get_usd_listings_under_20(),
+        'filename': 'usd_listing_under_20_txt'
+    },
+    {
+        'data': api.get_blanket_search_listings(),
+        'filename': 'blanket_txt'
+    },
+    {
+        'data': api.get_cotton_eur_listings(),
+        'filename': 'cotton_eur_txt'
+    },
+]:
+    save_to_file(listings=listings)
