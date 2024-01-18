@@ -28,7 +28,6 @@ def save_to_file(listings: Dict[str, Union[JsonData, str]]):
         file.write(json.dumps(listings['data'], indent=4))
 
 
-# hello
 class ListingsRequest:
 
     def __init__(
