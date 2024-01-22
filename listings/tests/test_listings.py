@@ -1,13 +1,13 @@
 import unittest
 from unittest.mock import patch
 
-from listings.base import ListingsRequest
+from listings.base import ListingsRequest, api_key, api_token, hostname
 
 listings_request = ListingsRequest(
-    api_key='736c751d-0ecd-426a-80cf-4a9ab782360e',
-    api_token='nBKd0EeSeNwtqau3KSzKMqUPsO7MgcLKMkP' \
-              'IGmJHX3NzrvXmCxkkdqysWO5WZXwozKf61b65_bQsXomIiSIi9g',
-    hostname='https://api.pythonic.me/v1')
+    api_key=api_key,
+    api_token=api_token,
+    hostname=hostname
+)
 
 
 class TestListingsRequest(unittest.TestCase):
