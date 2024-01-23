@@ -1,128 +1,300 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
-from listings.base import ListingsRequest, api_key, api_token, hostname
+import requests
+
+from listings.base import ListingsRequest, hostname
 
 listings_request = ListingsRequest(
-    api_key=api_key,
-    api_token=api_token,
+    api_key='mocked-api-key',
+    api_token='mocked-api-token',
     hostname=hostname
 )
 
 
 class TestListingsRequest(unittest.TestCase):
-    @patch('listings.base.ListingsRequest.get_digital_listings')
-    def test_get_digital_listings(self, mock_get_listings):
-        expected_result = [{'listing_type': 'digital'}]
+    def test_get_digital_listings__no_digital_listings(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': []
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_digital_listings()
 
-        mock_get_listings.return_value = expected_result
+        self.assertEqual(json_data, [])
 
-        request = listings_request
+    def test_get_digital_listings__has_digital_listings(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': [
+                        {
+                            "listing_id": "1bc5b9dc-b609"
+                                          "-4200-8378-d6b3c2271ae5",
+                            "user_id": "2b79dbcb-f374-4d4f-a071-da82cf94d58e",
+                            "shop_id": "a41a238a-f460-48f4-a364-098e6cb812a8",
+                            "title": "Baby Bottles - Probably",
+                            "description": "This is a reflect baby bottles."
+                                           " Tell a figure girl. ",
+                            "status": "private",
+                            "quantity": 6,
+                            "shop_section_id": 9,
+                            "featured_rank": 10,
+                            "listing_type": "digital",
+                            "non_taxable": True,
+                            "is_taxable": False,
+                        }
+                    ]
+                })
+            ]
+        )
 
-        result = request.get_digital_listings()
+        with listings_request_mock:
+            json_data = listings_request.get_digital_listings()
 
-        self.assertEqual(result, expected_result)
+        self.assertEqual(json_data, [{
+            "listing_id": "1bc5b9dc-b609-4200-8378-d6b3c2271ae5",
+            "user_id": "2b79dbcb-f374-4d4f-a071-da82cf94d58e",
+            "shop_id": "a41a238a-f460-48f4-a364-098e6cb812a8",
+            "title": "Baby Bottles - Probably",
+            "description": "This is a reflect"
+                           " baby bottles. Tell a figure girl. ",
+            "status": "private",
+            "quantity": 6,
+            "shop_section_id": 9,
+            "featured_rank": 10,
+            "listing_type": "digital",
+            "non_taxable": True,
+            "is_taxable": False,
+        }])
 
-    @patch('listings.base.ListingsRequest.get_soft_tag_listings')
-    def test_get_soft_tag_listings(self, mock_get_listings):
-        expected_result = [{'tag': 'soft'}]
+    def test_get_soft_tag_listings__no_soft_tags(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': []
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_soft_tag_listings()
 
-        mock_get_listings.return_value = expected_result
+        self.assertEqual(json_data, [])
 
-        request = listings_request
+    def test_get_soft_tag_listings__has_soft_tags(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': {
+                        "tags": [
+                            "cotton",
+                            "baby",
+                            "comfortable",
+                            "machine washable",
+                            "soft",
+                            "wool",
+                            "handmade"
+                        ]
+                    }
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_soft_tag_listings()
 
-        result = request.get_soft_tag_listings()
+        self.assertEqual(
+            json_data,
+            {
+                "tags": [
+                    "cotton",
+                    "baby",
+                    "comfortable",
+                    "machine washable",
+                    "soft",
+                    "wool",
+                    "handmade"
+                ]
+            }
+        )
 
-        self.assertEqual(result, expected_result)
+    def test_get_usd_listings_under_20__no_listings_under_20(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': []
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_usd_listings_under_20()
 
-    @patch('listings.base.ListingsRequest.get_usd_listings_under_20')
-    def test_get_usd_listings_under_20(self, mock_get_listings):
-        expected_data_contains_listings_under_20 = [
+        self.assertEqual(json_data, [])
+
+    def test_get_usd_listings_under_20__has_listings_under_20(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': [
+                        {'currency_code': 'usd', 'price_amount': 10},
+                        {'currency_code': 'usd', 'price_amount': 15},
+                        {'currency_code': 'usd', 'price_amount': 20},
+                        {'currency_code': 'usd', 'price_amount': 25},
+                        {'currency_code': 'usd', 'price_amount': 30}
+                    ]
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_usd_listings_under_20()
+
+        expected_result = [
             {'currency_code': 'usd', 'price_amount': 10},
             {'currency_code': 'usd', 'price_amount': 15},
-            {'currency_code': 'usd', 'price_amount': 20},
+            {'currency_code': 'usd', 'price_amount': 20}
         ]
 
-        expected_data_does_not_contains_listings_under_20 = [
-            {'currency_code': 'usd', 'price_amount': 10},
-            {'currency_code': 'usd', 'price_amount': 15},
-            {'currency_code': 'usd', 'price_amount': 20},
-            {'currency_code': 'usd', 'price_amount': 25},
-            {'currency_code': 'usd', 'price_amount': 30}
-        ]
+        self.assertEqual(json_data, expected_result)
 
-        mock_get_listings.side_effect = \
-            [expected_data_contains_listings_under_20,
-             expected_data_does_not_contains_listings_under_20]
+    def test_get_blanket_search_listings__no_blanket_search(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': [{
+                        "listing_id": "53731f65-8fa6-49ee-8a06-a575e84668ea",
+                        "user_id": "2b79dbcb-f374-4d4f-a071-da82cf94d58e",
+                        "shop_id": "a41a238a-f460-48f4-a364-098e6cb812a8",
+                        "title": "Children's Toys - Significant",
+                        "description": "This is a region children's toys."
+                                       " Generation American total model"
+                                       " common my participant. ",
+                        "status": "private",
+                        "quantity": 56,
+                        "shop_section_id": 1,
+                        "featured_rank": 58,
+                        "listing_type": "physical",
+                        "non_taxable": True,
+                        "is_taxable": False,
+                    }]
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_usd_listings_under_20()
 
-        request = listings_request
+        self.assertEqual(json_data, [])
 
-        result = request.get_usd_listings_under_20()
+    def test_get_blanket_search_listings__has_blanket_search(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': [{
+                        "listing_id": "0456bde6-da27-47ec-921b-27b731241a09",
+                        "user_id": "2b79dbcb-f374-4d4f-a071-da82cf94d58e",
+                        "shop_id": "a41a238a-f460-48f4-a364-098e6cb812a8",
+                        "title": "Baby Blanket - Own",
+                        "description": "This is a throughout baby blanket. "
+                                       "Serve mind certain into. ",
+                        "status": "public",
+                        "quantity": 79,
+                        "shop_section_id": 7,
+                        "featured_rank": 70,
+                        "listing_type": "digital",
+                        "non_taxable": True,
+                        "is_taxable": False,
+                    }]
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_blanket_search_listings()
 
-        expected_result = [item for item in
-                           expected_data_contains_listings_under_20 if
-                           item['price_amount'] <= 20]
+        self.assertEqual(json_data, [{
+            "listing_id": "0456bde6-da27-47ec-921b-27b731241a09",
+            "user_id": "2b79dbcb-f374-4d4f-a071-da82cf94d58e",
+            "shop_id": "a41a238a-f460-48f4-a364-098e6cb812a8",
+            "title": "Baby Blanket - Own",
+            "description": "This is a throughout baby blanket. "
+                           "Serve mind certain into. ",
+            "status": "public",
+            "quantity": 79,
+            "shop_section_id": 7,
+            "featured_rank": 70,
+            "listing_type": "digital",
+            "non_taxable": True,
+            "is_taxable": False,
+        }])
 
-        self.assertEqual(result, expected_result)
+    def test_get_cotton_eur_listings__no_cotton_eur_listings(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': [
+                        {'title': 'Cotton Throw Pillow',
+                         'description': 'Decorative pillow',
+                         'tags': 'cotton',
+                         'currency_code': 'usd'},
+                        {'title': 'Wool Socks',
+                         'description': 'Comfortable woolen socks',
+                         'tags': 'wool',
+                         'currency_code': 'eur'}
+                    ]
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_cotton_eur_listings()
 
-    @patch('listings.base.ListingsRequest.get_blanket_search_listings')
-    def test_get_blanket_search_listings(self, mock_get_listings):
-        expected_result_contains_blanket = [
-            {'title': 'Soft Wool Blanket',
-             'description': 'Warm and cozy blanket', }
-        ]
+        self.assertEqual(json_data, [])
 
-        expected_result_does_not_contain_blanket = [
-            {'title': 'Cotton Throw Pillow',
-             'description': 'Decorative pillow', }
-        ]
+    def test_get_cotton_eur_listings__has_cotton_eur(self):
+        listings_request_mock = patch.object(
+            target=requests,
+            attribute='get',
+            side_effect=[
+                Mock(**{
+                    'json.return_value': [
+                        {
+                            'title': 'Strollers - Traditional',
+                            'description': 'This is a training strollers.',
+                            'tags': ['cotton'],
+                            'currency_code': 'eur'
+                        }
+                    ]
+                })
+            ]
+        )
+        with listings_request_mock:
+            json_data = listings_request.get_cotton_eur_listings()
 
-        mock_get_listings.side_effect = \
-            [expected_result_contains_blanket,
-             expected_result_does_not_contain_blanket]
-
-        request = listings_request
-
-        result_contains_blanket = request.get_blanket_search_listings()
-        self.assertEqual(result_contains_blanket,
-                         expected_result_contains_blanket)
-
-        result_does_not_contain_blanket = request.get_blanket_search_listings()
-        self.assertEqual(result_does_not_contain_blanket,
-                         expected_result_does_not_contain_blanket)
-
-    @patch('listings.base.ListingsRequest.get_cotton_eur_listings')
-    def test_get_cotton_eur_listings(self, mock_get_listings):
-        expected_result_meets_criteria = [
-            {'title': 'Soft Wool Blanket',
-             'description': 'Warm and cozy blanket',
-             'tag': 'cotton',
-             'currency_code': 'eur'}
-        ]
-
-        expected_result_does_not_meet_criteria = [
-            {'title': 'Cotton Throw Pillow',
-             'description': 'Decorative pillow',
-             'tag': 'cotton',
-             'currency_code': 'usd'},
-            {'title': 'Wool Socks',
-             'description': 'Comfortable woolen socks',
-             'tag': 'wool',
-             'currency_code': 'eur'}
-        ]
-
-        mock_get_listings.side_effect = \
-            [expected_result_meets_criteria,
-             expected_result_does_not_meet_criteria]
-
-        request = listings_request
-
-        result_meets_criteria = request.get_cotton_eur_listings()
-        self.assertEqual(result_meets_criteria, expected_result_meets_criteria)
-
-        result_does_not_meet_criteria = request.get_cotton_eur_listings()
-        self.assertEqual(result_does_not_meet_criteria,
-                         expected_result_does_not_meet_criteria)
+        self.assertEqual(json_data, [
+            {
+                'title': 'Strollers - Traditional',
+                'description': 'This is a training strollers.',
+                'tags': ['cotton'],
+                'currency_code': 'eur'
+            }
+        ])
 
 
 if __name__ == '__main__':

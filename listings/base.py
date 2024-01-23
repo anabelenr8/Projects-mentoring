@@ -4,13 +4,10 @@ from typing import Dict, Any, Union, List
 
 import requests
 
-api_key = '736c751d-0ecd-426a-80cf-4a9ab782360e'
-api_token = 'nBKd0EeSeNwtqau3KSzKMqUPsO7MgcLKMkP' \
-            'IGmJHX3NzrvXmCxkkdqysWO5WZXwozKf61b65_bQsXomIiSIi9g'
+api_key = ''
+api_token = ''
 
-api_v1_key = 'ApM8MUgSIFefsHDSSqoVKTHtEvZntOBl' \
-             'UW7gidnRtfazdFY4YD9EBxS54sdvIfD9N' \
-             'GASOJsaK2xeyXyZsw9BLw'
+api_v1_key = ''
 
 hostname = 'https://api.pythonic.me/v1'
 
@@ -124,35 +121,3 @@ class ListingsRequest:
             listing.get('tags') == ['cotton']
             and listing.get('currency_code') == 'eur'
         ]
-
-
-api = ListingsRequest(
-    api_key=api_key,
-    api_token=api_token,
-    hostname=hostname
-)
-app_creation_response = api.create_app()
-
-for listings in [
-    {
-        'data': api.get_digital_listings(),
-        'filename': 'digital_listings_txt'
-    },
-    {
-        'data': api.get_soft_tag_listings(),
-        'filename': 'soft_tags_txt'
-    },
-    {
-        'data': api.get_usd_listings_under_20(),
-        'filename': 'usd_listing_under_20_txt'
-    },
-    {
-        'data': api.get_blanket_search_listings(),
-        'filename': 'blanket_txt'
-    },
-    {
-        'data': api.get_cotton_eur_listings(),
-        'filename': 'cotton_eur_txt'
-    },
-]:
-    save_to_file(listings=listings)
