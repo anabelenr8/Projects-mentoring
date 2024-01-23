@@ -13,4 +13,4 @@ __pycache__/
 .Python
 
 # Ignore all .txt files
-#*.txt
+*.txt
