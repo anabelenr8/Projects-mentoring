@@ -3,6 +3,10 @@
 import os
 import sys
 
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(filename='store.env', raise_error_if_not_found=True))
+
 
 def main():
     """Run administrative tasks."""
