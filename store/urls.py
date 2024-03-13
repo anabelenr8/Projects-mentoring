@@ -16,13 +16,15 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
+from store.reports.views import get_api_survey_and_answers
+from store.reports.views import post_report_generation
 from store.views import get_sample
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sample/', get_sample, name='get_sample'),
-    path('api/', include('reports.urls')),
-
+    path('api/survey/', get_api_survey_and_answers),
+    path('api/report/', post_report_generation, name='post_report_generation')
 ]

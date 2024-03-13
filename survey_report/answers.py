@@ -27,7 +27,7 @@ class Answers:
     DONT_KNOW = "limited_knowledge_about_it."
     NO = "not aware of zara\'s sustainability efforts."
 
-    CHOICE_ORGANIC = 'use organic_materials'
-    CHOICE_RECYCLING = 'recycling iniatives'
+    CHOICE_ORGANIC = 'use organic materials'
+    CHOICE_RECYCLING = 'recycling initiatives'
     CHOICE_WATER = 'reduction of water in production'
     CHOICE_NOT_SURE = 'not sure'
