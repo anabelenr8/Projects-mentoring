@@ -19,7 +19,6 @@ def main_function():
     report = Report(survey=Survey(**predetermined_answers))
     report_text = report.generate()
 
-    print('GENERATED REPORT:')
     print(report_text)
 
 

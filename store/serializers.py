@@ -1,31 +1,54 @@
 from rest_framework import serializers
 
 
-class ChoiceSerializer(serializers.Serializer):
-    answer = serializers.CharField()
-    choices = serializers.CharField()
+class RecyclingMaterialSerializer(serializers.Serializer):
+    answer = serializers.ChoiceField(choices=['yes', 'limited knowledge', 'not_aware'])
+    choices = serializers.ChoiceField(
+        choices=[
+            'organic_materials',
+            'recycling_materials',
+            'reuse_water',
+            'not_sure']
+    )
 
 
-class UserAnswersSerializer(serializers.Serializer):
-    Q1 = serializers.CharField()
-    Q2 = serializers.CharField()
-    Q3 = serializers.ListField(child=serializers.CharField())
-    Q4 = serializers.ListField(child=serializers.CharField())
-    Q5 = ChoiceSerializer()
+class TypeAndSizeSerializer(serializers.Serializer):
+    size = serializers.IntegerField()
+    type = serializers.ChoiceField(
+        choices=[
+            'type_uk',
+            'type_us',
+            'type_eu']
+    )
 
-    def validate(self, data):
-        """
-        Check that all questions have been answered.
-        """
-        missing_answers = []
-        for question, answer in data.items():
-            # Assuming that an empty string is not a valid answer
-            if answer in (None, '', [], {}):
-                missing_answers.append(question)
 
-        if missing_answers:
-            raise serializers.ValidationError(
-                f"Missing answers for: {', '.join(missing_answers)}."
-            )
+class SurveySerializer(serializers.Serializer):
+    your_style = serializers.ChoiceField(
+        choices=[
+            'casual_and_comfortable',
+            'elegant_and_chic',
+            'bohemian_and_relaxed',
+            'edgy_and_experimental',
+            'none_of_the_above']
+    )
+    colour_palette = serializers.ChoiceField(
+        choices=[
+            'bright_and_vibrant',
+            'neutral_and_subdued',
+            'dark_and_muted',
+            'pastel_and_soft',
+            'I_dont_pay_much_attention_to_colors']
+    )
+    shopping_category = serializers.ListField(
+        child=serializers.ChoiceField(
+            choices=
+            ['tops',
+             'bottoms',
+             'accessories',
+             'shoes']
+        ),
+        allow_empty=False
+    )
+    type_and_size = TypeAndSizeSerializer()
 
-        return data
+    preference_on_recycling_materials = RecyclingMaterialSerializer()
