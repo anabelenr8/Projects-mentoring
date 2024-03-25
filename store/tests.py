@@ -90,7 +90,6 @@ class TestSurveyReportGet(TestCase):
 
 class TestSurveyReportPost(TestCase):
     def test_report_generation(self):
-        self.maxDiff = None
         client = APIClient()
 
         request_data = {
