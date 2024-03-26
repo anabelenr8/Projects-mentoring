@@ -3,6 +3,7 @@ import json
 from django.http.request import HttpRequest
 from django.http.response import JsonResponse
 from django.views.decorators.http import require_http_methods
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 
 from store.reports.models import Report as ReportModel
@@ -86,6 +87,13 @@ def get_api_survey_and_answers(request: HttpRequest) -> JsonResponse:
     )
 
 
+@swagger_auto_schema(
+    method='POST',
+    operation_description='Processes a POST request with user survey responses,'
+                          ' generating a personalized style report. Validates'
+                          ' input, saves the report, and returns the report'
+                          ' text. Returns errors for invalid JSON or data.'
+)
 @api_view(['POST'])
 def post_report_generation(request):
     try:

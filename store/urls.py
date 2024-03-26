@@ -12,19 +12,34 @@ Class-based views
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls')
 """
-
 from django.contrib import admin
 from django.urls import path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 from store.reports.views import get_api_survey_and_answers
 from store.reports.views import post_report_generation
 from store.views import get_sample
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title='Mentoring API',
+        default_version='v1',
+        description='Mentoring API - for Python learning',
+        terms_of_service='#',
+        contact=openapi.Contact(email='ana.romero0501@gmailcom')
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny]
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sample/', get_sample, name='get_sample'),
     path('api/survey/', get_api_survey_and_answers),
-    path('api/report/', post_report_generation, name='post_report_generation')
+    path('api/report/', post_report_generation, name='post_report_generation'),
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='docs')
 ]
