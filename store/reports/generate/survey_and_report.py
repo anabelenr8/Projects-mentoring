@@ -1,7 +1,7 @@
 from typing import Dict, Union, List
 
-from survey_report.answers import Answers
-from survey_report.report import Report, Survey
+from store.reports.generate.answers import Answers
+from store.reports.generate.report import Report, Survey
 
 Answer = Union[str, List[str], Dict[str, Union[int, str]]]
 

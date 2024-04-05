@@ -1,5 +1,5 @@
-from survey_report.answers import Answers
-from survey_report.survey import Survey
+from store.reports.generate.answers import Answers
+from store.reports.generate.survey import Survey
 
 
 class Texts:
@@ -199,10 +199,12 @@ class Report:
                 ):
                     self.text += Texts.CHOICE_WATER_AND_NOT_SURE
             else:
-                self.text += 'Lorem ipsum dolor sit amet, '
-                'consectetur adipiscing elit. Pellentesque sed scelerisque'
-                ' nulla, at mattis mauris. Vestibulum dignissim viverra'
-                ' nulla quis tempus. (Any other case)'
+                self.text += 'Lorem ipsum dolor sit amet, ' + \
+                             'consectetur adipiscing elit.' \
+                             ' Pellentesque sed scelerisque' + \
+                             ' nulla, at mattis mauris.' \
+                             ' Vestibulum dignissim viverra' + \
+                             ' nulla quis tempus. (Any other case)'
 
     def generate(self) -> str:
         self.how_you_define_your_style()
