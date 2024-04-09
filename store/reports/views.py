@@ -1,8 +1,6 @@
 import json
 
 from django.http.request import HttpRequest
-from django.http.response import JsonResponse
-from django.views.decorators.http import require_http_methods
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,9 +12,9 @@ from store.reports.models import Report as ReportModel
 from store.serializers import SurveySerializer
 
 
-@require_http_methods(['GET'])
-def get_api_survey_and_answers(request: HttpRequest) -> JsonResponse:
-    return JsonResponse(
+@api_view(['GET'])
+def get_api_survey_and_answers(request: HttpRequest) -> Response:
+    return Response(
         status=200,
         data={
             'your_style': {
@@ -80,7 +78,7 @@ def get_api_survey_and_answers(request: HttpRequest) -> JsonResponse:
             },
             'type_and_size': {
                 'question': {
-                    'key': 'what_is_your_type_and_size_of_measurements',
+                    'key': 'type_and_size',
                     'display_name': 'What is your'
                                     ' type and size of measurements?',
                 },

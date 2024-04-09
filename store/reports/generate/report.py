@@ -177,6 +177,7 @@ class Report:
 
     def preference_on_recycling_material(self):
         q5_data = self.survey.Q5
+
         if q5_data and isinstance(q5_data, dict) and 'answer' in q5_data:
             if q5_data['answer'] == Answers.NO:
                 self.text += Texts.ANSWER_NO
@@ -187,24 +188,30 @@ class Report:
             elif q5_data['answer'] == Answers.YES and 'choices' in q5_data:
                 choices = q5_data['choices']
 
-                if (
-                        Answers.CHOICE_ORGANIC in choices and
-                        Answers.CHOICE_RECYCLING in choices
-                ):
+                if isinstance(choices, str):
+                    choices = [choices]
+
+                if Answers.CHOICE_ORGANIC in choices and \
+                        Answers.CHOICE_RECYCLING in choices:
+
                     self.text += Texts.ORGANIC_AND_RECYCLING
 
-                elif (
-                        Answers.CHOICE_WATER in choices and
-                        Answers.CHOICE_NOT_SURE in choices
-                ):
+                elif Answers.CHOICE_WATER in choices and \
+                        Answers.CHOICE_NOT_SURE in choices:
+
                     self.text += Texts.CHOICE_WATER_AND_NOT_SURE
+
             else:
                 self.text += 'Lorem ipsum dolor sit amet, ' + \
-                             'consectetur adipiscing elit.' \
-                             ' Pellentesque sed scelerisque' + \
-                             ' nulla, at mattis mauris.' \
-                             ' Vestibulum dignissim viverra' + \
-                             ' nulla quis tempus. (Any other case)'
+                             'consectetur adipiscing elit. ' + \
+                             'Pellentesque sed scelerisque ' + \
+                             'nulla, at mattis mauris. ' + \
+                             'Vestibulum dignissim viverra ' + \
+                             'nulla quis tempus. (Any other case)'
+        else:
+
+            self.text += 'Missing or unexpected format for' \
+                         ' recycling materials preference data.'
 
     def generate(self) -> str:
         self.how_you_define_your_style()

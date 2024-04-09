@@ -20,43 +20,43 @@ class TestSurveyReportGet(TestCase):
         expected_data = {
             'your_style': {
                 'question': {
-                    'key': 'how_do_you_define_your_style',
+                    'key': 'your_style',
                     'display_name': 'How do you define your style?',
                 },
                 'answers': [
                     {'key': 'casual_comfortable',
-                     'display_name': 'casual and comfortable'},
+                     'display_name': 'Casual and Comfortable'},
 
                     {'key': 'elegant_chic',
-                     'display_name': 'elegant and chic'},
+                     'display_name': 'Elegant and Chic'},
 
                     {'key': 'bohemian_relaxed',
-                     'display_name': 'bohemian and relaxed'},
+                     'display_name': 'Bohemian and Relaxed'},
 
                     {'key': 'edgy_experimental',
-                     'display_name': 'edgy and experimental'},
+                     'display_name': 'Edgy and Experimental'},
 
                     {'key': 'none_above',
-                     'display_name': 'none of the above'},
+                     'display_name': 'None of the above'},
                 ],
             },
             'colour_palette': {
                 'question': {
-                    'key': 'describe_your_colour_palette',
+                    'key': 'colour_palette',
                     'display_name': 'Describe your colour palette?',
                 },
                 'answers': [
                     {'key': 'bright_vibrant',
-                     'display_name': 'bright and vibrant'},
+                     'display_name': 'Bright and Vibrant'},
 
                     {'key': 'neutral_subdued',
-                     'display_name': 'neutral and subdued'},
+                     'display_name': 'Neutral and Subdued'},
 
                     {'key': 'dark_muted',
-                     'display_name': 'dark and muted'},
+                     'display_name': 'Dark and Muted'},
 
                     {'key': 'pastel_soft',
-                     'display_name': 'pastel and soft'},
+                     'display_name': 'Pastel and Soft'},
 
                     {'key': 'not_attention_colors',
                      'display_name': "I don't pay much attention to colors"},
@@ -64,7 +64,7 @@ class TestSurveyReportGet(TestCase):
             },
             'shopping_category': {
                 'question': {
-                    'key': 'what_is_your_shopping_category',
+                    'key': 'shopping_category',
                     'display_name': 'What is your shopping category?',
                 },
                 'answers': [
@@ -86,9 +86,8 @@ class TestSurveyReportGet(TestCase):
             },
             'type_and_size': {
                 'question': {
-                    'key': 'what_is_your_type_and_size_of_measurements',
-                    'display_name': 'What is your'
-                                    ' type and size of measurements?',
+                    'key': 'type_and_size',
+                    'display_name': 'What is your type and size of measurements?',
                 },
                 'answers': [
                     {'key': 'type_uk', 'display_name': 'Type UK'},
@@ -98,16 +97,16 @@ class TestSurveyReportGet(TestCase):
             },
             'preference_on_recycling_materials': {
                 'question': {
-                    'key': 'what_is_your_preference_on_recycling_materials',
+                    'key': 'preference_on_recycling_materials',
                     'display_name': 'What is your preference'
                                     ' on recycling materials?',
                 },
                 'answers': [
-                    {'key': 'yes', 'display_name': 'yes'},
+                    {'key': 'yes', 'display_name': 'Yes'},
                     {'key': 'limited_knowledge',
-                     'display_name': 'limited knowledge about it.'},
+                     'display_name': 'Limited knowledge about it.'},
                     {'key': 'not_aware',
-                     'display_name': "not aware of sustainability efforts."},
+                     'display_name': "Not aware of sustainability efforts."},
                 ],
                 'choices': [
                     {'key': 'organic_materials',
@@ -140,25 +139,26 @@ class TestSurveyReportPost(TestCase):
             },
             'preference_on_recycling_materials': {
                 'answer': 'yes',
-                'choices': 'organic_materials'
+                'choices': ['use_organic_materials', 'recycling_initiatives']
+
             }
         }
 
         expected_generated_report = (
             'Lorem ipsum 1. Question - ANSWER_1 dolor sit amet, consectetur'
             ' adipiscing elit...Mauris urna nunc, eleifend id sapien eget,'
-            ' 2.Question - ANSWER_1 or ANSWER_3 tincidunt venenatis'
-            ' risus...Lorem ipsum dolor sit amet, consectetur adipiscing'
+            ' 2.Question - ANSWER_1 or ANSWER_3 tincidunt venenatis '
+            'risus...Lorem ipsum dolor sit amet, consectetur adipiscing'
             ' elit. Cras viverra luctus nunc, non ultrices mauris molestie'
-            ' vitae. Sed gravida purus finibus 3. Question -'
-            ' ANSWER_4, ANSWER_3 or ANSWER_1 efficitur congue. '
+            ' vitae. Sed gravida purus finibus 3. Question - '
+            'ANSWER_4, ANSWER_3 or ANSWER_1 efficitur congue. '
             'Vestibulum magna urna, volutpat vitae auctor non, '
             'pharetra vel leo. Your type is type_usYour '
             'clothing size is 14 Your clothing size is suitable.'
-            'Mauris viverra lobortis ante, eget faucibus felis pulvinar et. '
-            'Suspendisse urna diam, ANSWER_YES and ANSWER_YES_CHOICE_2,'
-            ' ANSWER_YES_CHOICE_3 elementum nec tincidunt ornare,'
-            ' convallis condimentum nisi.'
+            'Mauris viverra lobortis ante, eget faucibus felis '
+            'pulvinar et. Suspendisse urna diam, ANSWER_YES and '
+            'ANSWER_YES_CHOICE_2, ANSWER_YES_CHOICE_3 elementum '
+            'nec tincidunt ornare, convallis condimentum nisi.'
         )
 
         res = client.post \
@@ -455,14 +455,14 @@ class TestReportGeneration(TestCase):
                     'Q4': {'type': Answers.TYPE_UK}
                 },
 
-                'expected_text': 'UK'
+                'expected_text': 'type_uk'
             },
             {
                 'predetermined_answers': {
                     'Q4': {'type': Answers.TYPE_EU}
                 },
 
-                'expected_text': 'EU'
+                'expected_text': 'type_eu'
             },
 
             {
@@ -470,7 +470,7 @@ class TestReportGeneration(TestCase):
                     'Q4': {'type': Answers.TYPE_US}
                 },
 
-                'expected_text': 'US'
+                'expected_text': 'type_us'
             }
         ]
         for test_case in test_cases:

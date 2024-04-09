@@ -1,19 +1,23 @@
 from rest_framework import serializers
+
 from store.reports.generate.answers import Answers
 
 
 class RecyclingMaterialSerializer(serializers.Serializer):
     answer = serializers.ChoiceField(
-        choices=[Answers.YES,
-                 Answers.DONT_KNOW,
-                 Answers.NO])
+        choices=[Answers.YES, Answers.DONT_KNOW, Answers.NO]
+    )
 
-    choices = serializers.ChoiceField(
-        choices=[
-            Answers.CHOICE_ORGANIC,
-            Answers.CHOICE_RECYCLING,
-            Answers.CHOICE_WATER,
-            Answers.CHOICE_NOT_SURE]
+    choices = serializers.ListField(
+        child=serializers.ChoiceField(
+            choices=[
+                Answers.CHOICE_ORGANIC,
+                Answers.CHOICE_RECYCLING,
+                Answers.CHOICE_WATER,
+                Answers.CHOICE_NOT_SURE
+            ]
+        ),
+        allow_empty=False
     )
 
 
