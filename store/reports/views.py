@@ -2,6 +2,7 @@ import json
 
 from django.http.request import HttpRequest
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -9,7 +10,7 @@ from store.reports.docs import post_report_description
 from store.reports.generate.report import Report as ReportGenerator
 from store.reports.generate.survey import Survey
 from store.reports.models import Report as ReportModel
-from store.serializers import SurveySerializer
+from store.reports.serializers import SurveySerializer
 
 
 @api_view(['GET'])
@@ -119,6 +120,15 @@ def get_api_survey_and_answers(request: HttpRequest) -> Response:
     )
 
 
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportModel
+        fields = [
+            'uid',
+            'test'
+        ]
+
+
 @swagger_auto_schema(
     method='POST',
     operation_description=post_report_description
@@ -144,12 +154,11 @@ def post_report(request: HttpRequest):
         Q5=serializer.validated_data['preference_on_recycling_materials']
     )
 
-    report = ReportGenerator(survey=survey)
-    report_text = report.generate()
+    report_text = ReportGenerator(survey=survey).generate()
 
-    ReportModel.objects.create(text=report_text)
+    report = ReportModel.objects.create(text=report_text)
 
     return Response(
-        data={'report_text': report_text},
+        data=ReportSerializer(instance=report).data,
         status=200
     )

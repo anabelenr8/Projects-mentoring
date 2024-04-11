@@ -10,7 +10,14 @@ schema_view = get_schema_view(
     openapi.Info(
         title='Store API',
         default_version='v1',
-        description='Store API - for Python learning',
+        description='Store API - The "Store - Survey and Report" is a'
+                    ' Django REST API that collects user preferences'
+                    ' on fashion and sustainability, covering style,'
+                    ' color preferences, shopping habits, garment size,'
+                    ' and recycling views. It aims to provide sustainable'
+                    ' fashion brands with insights to align their products'
+                    ' and practices with customer preferences.',
+
         terms_of_service='#',
         contact=openapi.Contact(email='ana.romero0501@gmailcom')
     ),
