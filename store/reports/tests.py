@@ -173,7 +173,7 @@ class TestSurveyReportPost(TestCase):
         )
 
         self.assertEqual(
-            res.json()['report_text'],
+            res.json()['text'],
             expected_generated_report
         )
 
