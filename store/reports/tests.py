@@ -126,7 +126,7 @@ class TestSurveyReportGet(TestCase):
 
 
 class TestSurveyReportPost(TestCase):
-    def test_report_generation(self):
+    def test_report_generation_post(self):
         client = APIClient()
 
         request_data = {

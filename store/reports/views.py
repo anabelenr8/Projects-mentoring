@@ -7,12 +7,17 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from store.reports.docs import post_report_description
+from store.reports.docs.get_survey_description import get_report_description
 from store.reports.generate.report import Report as ReportGenerator
 from store.reports.generate.survey import Survey
 from store.reports.models import Report as ReportModel
 from store.reports.serializers import SurveySerializer
 
 
+@swagger_auto_schema(
+    method='GET',
+    operation_description=get_report_description
+)
 @api_view(['GET'])
 def get_api_survey_and_answers(request: HttpRequest) -> Response:
     return Response(
@@ -125,7 +130,7 @@ class ReportSerializer(serializers.ModelSerializer):
         model = ReportModel
         fields = [
             'uid',
-            'test'
+            'text'
         ]
 
 
