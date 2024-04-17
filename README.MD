@@ -5,7 +5,6 @@
 1. [Design](#design)
 1. [Features](#features)
 1. [Technologies Used](#technologies-used)
-1. [Project Challenges](#project-challenges)
 1. [Thoughts and Observations](#thoughts-and-observations)
 1. [Future Enhancements](#future-enhancements)
 1. [Installation](#installation)
@@ -75,15 +74,7 @@ survey questions and processing logic.
 
 - Django & Django REST Framework for the backend API.
 - Swagger for API documentation.
-- Docker for containerization and easy deployment.
-- PostgreSQL for database needs.
 - Git for version control.
-
-<br>
-
-## Project Challenges
-
-TBC
 
 <br>
 

@@ -126,11 +126,12 @@ def get_api_survey_and_answers(request: HttpRequest) -> Response:
 
 
 class ReportSerializer(serializers.ModelSerializer):
+    report_text = serializers.CharField(source='text', max_length=255)
+
     class Meta:
         model = ReportModel
         fields = [
-            'uid',
-            'text'
+            'report_text'
         ]
 
 

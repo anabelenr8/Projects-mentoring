@@ -20,3 +20,4 @@ class ProjectModel(TimestampedModel):
 
 class Report(ProjectModel):
     text = models.TextField()
+    report_text = models.TextField()
