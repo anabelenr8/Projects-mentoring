@@ -1,11 +1,184 @@
 import copy
-import unittest
 
-from survey_report.answers import Answers
-from survey_report.report import Report, Survey
+from django.test import TestCase
+from rest_framework.test import APIClient
+
+from store.reports.generate.answers import Answers
+from store.reports.generate.report import Report, Survey
 
 
-class TestReportGeneration(unittest.TestCase):
+class TestSurveyReportGet(TestCase):
+    def test_survey_and_answers(self):
+        client = APIClient()
+
+        res = client.get('/api/survey/')
+
+        self.assertEqual(
+            res.status_code,
+            200
+        )
+        expected_data = {
+            'your_style': {
+                'question': {
+                    'key': 'your_style',
+                    'display_name': 'How do you define your style?',
+                },
+                'answers': [
+                    {'key': 'casual_comfortable',
+                     'display_name': 'Casual and Comfortable'},
+
+                    {'key': 'elegant_chic',
+                     'display_name': 'Elegant and Chic'},
+
+                    {'key': 'bohemian_relaxed',
+                     'display_name': 'Bohemian and Relaxed'},
+
+                    {'key': 'edgy_experimental',
+                     'display_name': 'Edgy and Experimental'},
+
+                    {'key': 'none_above',
+                     'display_name': 'None of the above'},
+                ],
+            },
+            'colour_palette': {
+                'question': {
+                    'key': 'colour_palette',
+                    'display_name': 'Describe your colour palette?',
+                },
+                'answers': [
+                    {'key': 'bright_vibrant',
+                     'display_name': 'Bright and Vibrant'},
+
+                    {'key': 'neutral_subdued',
+                     'display_name': 'Neutral and Subdued'},
+
+                    {'key': 'dark_muted',
+                     'display_name': 'Dark and Muted'},
+
+                    {'key': 'pastel_soft',
+                     'display_name': 'Pastel and Soft'},
+
+                    {'key': 'not_attention_colors',
+                     'display_name': "I don't pay much attention to colors"},
+                ],
+            },
+            'shopping_category': {
+                'question': {
+                    'key': 'shopping_category',
+                    'display_name': 'What is your shopping category?',
+                },
+                'answers': [
+                    {'key': 'tops',
+                     'display_name': 'Tops'},
+
+                    {'key': 'bottoms',
+                     'display_name': 'Bottoms'},
+
+                    {'key': 'dresses_jumpsuits',
+                     'display_name': 'Dresses and Jumpsuits'},
+
+                    {'key': 'accessories',
+                     'display_name': 'Accessories'},
+
+                    {'key': 'shoes',
+                     'display_name': 'Shoes'},
+                ],
+            },
+            'type_and_size': {
+                'question': {
+                    'key': 'type_and_size',
+                    'display_name': 'What is your type and size of measurements?',
+                },
+                'answers': [
+                    {'key': 'type_uk', 'display_name': 'Type UK'},
+                    {'key': 'type_us', 'display_name': 'Type US'},
+                    {'key': 'type_eu', 'display_name': 'Type EU'},
+                ],
+            },
+            'preference_on_recycling_materials': {
+                'question': {
+                    'key': 'preference_on_recycling_materials',
+                    'display_name': 'What is your preference'
+                                    ' on recycling materials?',
+                },
+                'answers': [
+                    {'key': 'yes', 'display_name': 'Yes'},
+                    {'key': 'limited_knowledge',
+                     'display_name': 'Limited knowledge about it.'},
+                    {'key': 'not_aware',
+                     'display_name': "Not aware of sustainability efforts."},
+                ],
+                'choices': [
+                    {'key': 'organic_materials',
+                     'display_name': 'Organic Materials'},
+                    {'key': 'recycling_materials',
+                     'display_name': 'Recycling Materials'},
+                    {'key': 'reuse_water', 'display_name': 'Reuse of Water'},
+                    {'key': 'not_sure', 'display_name': 'Not Sure'},
+                ],
+            },
+        }
+
+        self.assertDictEqual(
+            res.json(),
+            expected_data
+        )
+
+
+class TestSurveyReportPost(TestCase):
+    def test_report_generation_post(self):
+        client = APIClient()
+
+        request_data = {
+            'your_style': 'casual_and_comfortable',
+            'colour_palette': 'bright_and_vibrant',
+            'shopping_category': ['tops', 'bottoms', 'accessories'],
+            'type_and_size': {
+                'size': 14,
+                'type': 'type_us',
+            },
+            'preference_on_recycling_materials': {
+                'answer': 'yes',
+                'choices': ['use_organic_materials', 'recycling_initiatives']
+
+            }
+        }
+
+        expected_generated_report = (
+            'Lorem ipsum 1. Question - ANSWER_1 dolor sit amet, consectetur'
+            ' adipiscing elit...Mauris urna nunc, eleifend id sapien eget,'
+            ' 2.Question - ANSWER_1 or ANSWER_3 tincidunt venenatis '
+            'risus...Lorem ipsum dolor sit amet, consectetur adipiscing'
+            ' elit. Cras viverra luctus nunc, non ultrices mauris molestie'
+            ' vitae. Sed gravida purus finibus 3. Question - '
+            'ANSWER_4, ANSWER_3 or ANSWER_1 efficitur congue. '
+            'Vestibulum magna urna, volutpat vitae auctor non, '
+            'pharetra vel leo. Your type is type_usYour '
+            'clothing size is 14 Your clothing size is suitable.'
+            'Mauris viverra lobortis ante, eget faucibus felis '
+            'pulvinar et. Suspendisse urna diam, ANSWER_YES and '
+            'ANSWER_YES_CHOICE_2, ANSWER_YES_CHOICE_3 elementum '
+            'nec tincidunt ornare, convallis condimentum nisi.'
+        )
+
+        res = client.post \
+            ('/api/report/',
+             data=request_data,
+             format='json'
+             )
+
+        self.assertEqual(
+            res.status_code,
+            200
+        )
+
+        self.assertEqual(
+            res.json()['text'],
+            expected_generated_report
+        )
+
+
+class TestReportGeneration(TestCase):
     test_data = {
         'predetermined_answers': {
             'Q1': Answers.CASUAL_AND_COMFORTABLE,
@@ -282,14 +455,14 @@ class TestReportGeneration(unittest.TestCase):
                     'Q4': {'type': Answers.TYPE_UK}
                 },
 
-                'expected_text': 'UK'
+                'expected_text': 'type_uk'
             },
             {
                 'predetermined_answers': {
                     'Q4': {'type': Answers.TYPE_EU}
                 },
 
-                'expected_text': 'EU'
+                'expected_text': 'type_eu'
             },
 
             {
@@ -297,7 +470,7 @@ class TestReportGeneration(unittest.TestCase):
                     'Q4': {'type': Answers.TYPE_US}
                 },
 
-                'expected_text': 'US'
+                'expected_text': 'type_us'
             }
         ]
         for test_case in test_cases:
@@ -406,7 +579,3 @@ class TestReportGeneration(unittest.TestCase):
                 report.generate()
 
             )
-
-
-if __name__ == '__main__':
-    unittest.main()
