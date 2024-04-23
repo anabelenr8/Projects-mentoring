@@ -19,4 +19,4 @@ __pycache__/
 
 
 *.env
-store.prod.env
+*.store.prod.env
