@@ -11,6 +11,7 @@ django-cors-headers = "*"
 python-dotenv = "*"
 django-extensions = "*"
 drf-yasg = "*"
+gunicorn = "*"
 
 [dev-packages]
 
