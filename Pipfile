@@ -9,9 +9,11 @@ django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 python-dotenv = "*"
-django-extensions = "*"
+git adddjango-extensions = "*"
 drf-yasg = "*"
 gunicorn = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
