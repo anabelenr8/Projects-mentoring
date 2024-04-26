@@ -28,5 +28,6 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('api/survey/', get_api_survey_and_answers),
     path('api/report/', post_report, name='post_report_generation'),
-    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='docs')
+    path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),
+         name='docs')
 ]
