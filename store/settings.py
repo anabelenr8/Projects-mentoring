@@ -5,9 +5,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv(
+    'DJANGO_ALLOWED_HOSTS',
+    '127.0.0.1'
+).split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,7 +30,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # from "corsheaders" package
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,11 +63,11 @@ WSGI_APPLICATION = 'store.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'store_api_db',
-        'USER': 'store_api',
-        'PASSWORD': 'olakase12-an23478986',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ['STORE_DB_NAME'],
+        'USER': os.getenv('STORE_DB_USER'),
+        'PASSWORD': os.getenv('STORE_DB_PASSWORD'),
+        'HOST': os.getenv('STORE_DB_HOST'),
+        'PORT': os.getenv('STORE_DB_PORT'),
     }
 }
 
@@ -82,6 +85,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 LANGUAGE_CODE = 'en-us'
 
