@@ -11,6 +11,8 @@ Key is saved at:         /etc/letsencrypt/live/anabelenromero.com/privkey.pem
 
 python manage.py collectstatic --noinput
 
+#path to virtual env
+/var/www/.local/share/virtualenvs/store-LEsRl0nh
 
 
 sudo nginx -t

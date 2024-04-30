@@ -30,7 +30,7 @@ server {
     }
 
     location /static/ {
-        alias /var/www/projects/store/staticfiles;
+        alias /var/www/projects/store/staticfiles/;
         expires max;
         access_log off;
     }
