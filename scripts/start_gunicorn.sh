@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VENV_PATH="/var/www/.local/share/virtualenvs/store-LEsRl0nh"
+VENV_PATH="/var/www/.local/share/virtualenvs/store-new-version-Y-PARjJd"
 
 CURRENT_PROJECT_PATH="/var/www/projects/store"
 
