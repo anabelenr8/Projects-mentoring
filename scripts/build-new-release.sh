@@ -65,4 +65,4 @@ sudo supervisorctl restart gunicorn
 sudo systemctl reload nginx
 sudo systemctl restart nginx
 
-source /root/.local/share/virtualenvs/root-BuDEOXnJ
+source /var/www/.local/share/virtualenvs/store-new-version-Y-PARjJd
