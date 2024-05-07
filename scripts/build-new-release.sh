@@ -1,5 +1,10 @@
 #! /usr/bin/env bash
 
+###
+## STEPS TO DEPLOY A NEW VERSION
+###
+# ssh root@167.172.53.113 "su -s /bin/bash www-data -c 'cd /var/www/projects/scripts/backend && ./build-new-release.sh'"
+
 NEW_PROJECT_PATH="/var/www/projects/store-new-version"
 
 CURRENT_PROJECT_PATH="/var/www/projects/store"
@@ -59,3 +64,5 @@ sudo supervisorctl restart gunicorn
 
 sudo systemctl reload nginx
 sudo systemctl restart nginx
+
+source /root/.local/share/virtualenvs/root-BuDEOXnJ
