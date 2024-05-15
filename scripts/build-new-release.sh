@@ -18,6 +18,7 @@ PIPENV_PATH="/usr/bin/pipenv"
 VENV_PATH="/var/www/.local/share/virtualenvs/store-new-version-Y-PARjJd"
 
 
+
 if [ -d "$NEW_PROJECT_PATH" ]; then rm -Rf ${NEW_PROJECT_PATH}; fi
 
 # ssh-keygen -t rsa -b 4096 -C "www-data@store.com"

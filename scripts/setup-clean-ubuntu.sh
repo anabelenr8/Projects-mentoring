@@ -26,7 +26,7 @@ sudo -i -u postgres psql
 # Change "projectname_*" prefix to fit your project
 # !!! Don't keep your passwords in this file
 # !!! only in secure notes / 1Password App
-CREATE ROLE projectname_api WITH LOGIN PASSWORD '';
+CREATE ROLE projectname_api WITH LOGIN PASSWORD;
 
 ALTER ROLE projectname_api CREATEDB;
 
