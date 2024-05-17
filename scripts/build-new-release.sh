@@ -18,7 +18,6 @@ PIPENV_PATH="/usr/bin/pipenv"
 VENV_PATH="/var/www/.local/share/virtualenvs/store-new-version-Y-PARjJd"
 
 
-
 if [ -d "$NEW_PROJECT_PATH" ]; then rm -Rf ${NEW_PROJECT_PATH}; fi
 
 # ssh-keygen -t rsa -b 4096 -C "www-data@store.com"
@@ -34,9 +33,25 @@ cd ${NEW_PROJECT_PATH}
 #/var/www/.local/share/virtualenvs/store-new-version-Y-PARjJd
 ${PIPENV_PATH} install
 
+PYTHON_PATH="${VENV_PATH}/bin/python"
+
 # Migrate DB
 ${PYTHON_PATH} ${NEW_PROJECT_PATH}/manage.py migrate
 
+# Static files
+${PYTHON_PATH} ${NEW_PROJECT_PATH}/manage.py collectstatic --noinput
+
+# Switch to new version
+if [ -d "$OLD_PROJECT_PATH" ]; then rm -Rf ${OLD_PROJECT_PATH}; fi
+
+# Switch: Current version -> Old version
+if [ -d "$CURRENT_PROJECT_PATH" ]; then mv ${CURRENT_PROJECT_PATH} ${OLD_PROJECT_PATH}; fi
+
+# Switch: New version -> Current version
+mv ${NEW_PROJECT_PATH} ${CURRENT_PROJECT_PATH}
+
+# Make gunicorn script executable
+chmod +x ${CURRENT_PROJECT_PATH}/scripts/start_gunicorn.sh
 
 # !!! In order for "www-data" user to be able to
 # restart the following service, make sure "www-data" user is configured
@@ -66,4 +81,3 @@ sudo supervisorctl restart gunicorn
 sudo systemctl reload nginx
 sudo systemctl restart nginx
 
-source /var/www/.local/share/virtualenvs/store-new-version-Y-PARjJd
