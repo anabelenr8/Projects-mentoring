@@ -30,33 +30,19 @@ submitting survey responses and retrieving aggregated data.
 
 <br>
 
-Adjust "Click here" link below:
-
-<br>
-
 Click
-here: [https://link-to-your-demo-goes-here/](https://link-to-your-demo-goes-here/)
+here: [https://anabelenromero.com/api/survey/], [https://anabelenromero.com/api/report/], [https://anabelenromero.com/api/docs/]
+
+
 
 <br>
 
-## Design TBC
+## Design
 
 The application design follows a microservice architecture, with the Django
 REST framework facilitating the creation of a clean, RESTful API. The project
 structure emphasizes modularity, allowing easy extension or modification of
 survey questions and processing logic.
-
-<br>
-
-<p align="center">
-  <img src="https://robertsgreibers.sfo3.cdn.digitaloceanspaces.com/mentoring/m6-readme-file-example-1.png" width="750px" />
-</p>
-
-<br>
-
-<p align="center">
-  <img src="https://robertsgreibers.sfo3.cdn.digitaloceanspaces.com/mentoring/m6-readme-file-example-2.png" width="750px" />
-</p>
 
 <br>
 
@@ -90,8 +76,6 @@ data types and structures efficiently.
 
 - Implementing authentication to manage user sessions and personalize the
   survey experience.
-- Adding machine learning algorithms to analyze survey responses for trends.
-- Enhancing the API to support real-time data analytics.
 
 <br>
 
@@ -101,16 +85,16 @@ Provide instructions on how to install and run your project locally.
 
 Example below:
 
-1. Clone the GitHub repository to your local machine: TBD
+1. Clone the GitHub repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/your-project-name.git
+   git clone git@github.com:anabelenr8/store.git
    ```
 
 2. Navigate to the project's directory: TBD
 
    ```bash
-   cd your-project-name
+   cd /var/www/projects/store-new-version
    ```
 
 3. Install the project's dependencies using pipenv:
