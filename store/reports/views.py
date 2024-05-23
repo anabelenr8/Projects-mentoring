@@ -159,6 +159,21 @@ class ReportSerializer(serializers.ModelSerializer):
         ]
 
 
+example_request_body = {
+    "your_style": "casual_and_comfortable",
+    "colour_palette": "bright_and_vibrant",
+    "shopping_category": ["tops", "bottoms", "accessories"],
+    "type_and_size": {
+        "size": 14,
+        "type": "type_us"
+    },
+    "preference_on_recycling_materials": {
+        "answer": "yes",
+        "choices": ["use_organic_materials", "recycling_initiatives"]
+    }
+}
+
+
 @swagger_auto_schema(
     method='POST',
     operation_description=post_report_description,
@@ -166,7 +181,10 @@ class ReportSerializer(serializers.ModelSerializer):
     request_body=SurveySerializer,
     operation_summary='Create a Report by submitting Survey Answers',
     tags=["Report"],
-    responses={200: ReportSerializer()}
+    responses={200: ReportSerializer()},
+    examples={
+        'application/json': example_request_body
+    }
 )
 @api_view(['POST'])
 def post_report(request: HttpRequest):
