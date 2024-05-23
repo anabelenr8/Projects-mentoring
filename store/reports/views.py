@@ -14,114 +14,139 @@ from store.reports.models import Report as ReportModel
 from store.reports.serializers import SurveySerializer
 
 
+class QuestionSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    display_name = serializers.CharField()
+
+
+class AnswerSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    display_name = serializers.CharField()
+
+
+class SurveyQuestionSerializer(serializers.Serializer):
+    question = QuestionSerializer()
+    answers = AnswerSerializer(many=True)
+
+
 @swagger_auto_schema(
     method='GET',
-    operation_description=get_report_description
+    operation_description=get_report_description,
+    operation_id='get_survey_questions',
+    responses={200: SurveyQuestionSerializer(many=True)}
 )
 @api_view(['GET'])
 def get_api_survey_and_answers(request: HttpRequest) -> Response:
+    data = [
+        {
+            'question': {
+                'key': 'your_style',
+                'display_name': 'How do you define your style?',
+            },
+            'answers': [
+                {'key': 'casual_comfortable',
+                 'display_name': 'Casual and Comfortable'},
+
+                {'key': 'elegant_chic',
+                 'display_name': 'Elegant and Chic'},
+
+                {'key': 'bohemian_relaxed',
+                 'display_name': 'Bohemian and Relaxed'},
+
+                {'key': 'edgy_experimental',
+                 'display_name': 'Edgy and Experimental'},
+
+                {'key': 'none_above',
+                 'display_name': 'None of the above'},
+            ],
+        },
+        {
+            'question': {
+                'key': 'colour_palette',
+                'display_name': 'Describe your colour palette?',
+            },
+            'answers': [
+                {'key': 'bright_vibrant',
+                 'display_name': 'Bright and Vibrant'},
+
+                {'key': 'neutral_subdued',
+                 'display_name': 'Neutral and Subdued'},
+
+                {'key': 'dark_muted',
+                 'display_name': 'Dark and Muted'},
+
+                {'key': 'pastel_soft',
+                 'display_name': 'Pastel and Soft'},
+
+                {'key': 'not_attention_colors',
+                 'display_name': "I don't pay much attention to colors"},
+            ],
+        },
+        {
+            'question': {
+                'key': 'shopping_category',
+                'display_name': 'What is your shopping category?',
+            },
+            'answers': [
+                {'key': 'tops', 'display_name': 'Tops'},
+
+                {'key': 'bottoms', 'display_name': 'Bottoms'},
+
+                {'key': 'dresses_jumpsuits',
+                 'display_name': 'Dresses and Jumpsuits'},
+
+                {'key': 'accessories', 'display_name': 'Accessories'},
+
+                {'key': 'shoes', 'display_name': 'Shoes'},
+            ],
+        },
+        {
+            'question': {
+                'key': 'type_and_size',
+                'display_name': 'What is your'
+                                ' type and size of measurements?',
+            },
+            'answers': [
+                {'key': 'type_uk', 'display_name': 'Type UK'},
+                {'key': 'type_us', 'display_name': 'Type US'},
+                {'key': 'type_eu', 'display_name': 'Type EU'},
+            ],
+        },
+        {
+            'question': {
+                'key': 'preference_on_recycling_materials',
+                'display_name': 'What is your preference'
+                                ' on recycling materials?',
+            },
+            'answers': [
+                {'key': 'yes', 'display_name': 'Yes'},
+
+                {'key': 'limited_knowledge',
+                 'display_name': 'Limited knowledge about it.'},
+
+                {'key': 'not_aware',
+                 'display_name': "Not aware of sustainability efforts."},
+            ],
+            'choices': [
+                {'key': 'organic_materials',
+                 'display_name': 'Organic Materials'},
+
+                {'key': 'recycling_materials',
+                 'display_name': 'Recycling Materials'},
+
+                {'key': 'reuse_water',
+                 'display_name': 'Reuse of Water'},
+
+                {'key': 'not_sure', 'display_name': 'Not Sure'},
+            ],
+        },
+    ]
+    serializer = SurveyQuestionSerializer(data=data, many=True)
+    serializer.is_valid(raise_exception=True)
+
     return Response(
         status=200,
-        data={
-            'your_style': {
-                'question': {
-                    'key': 'your_style',
-                    'display_name': 'How do you define your style?',
-                },
-                'answers': [
-                    {'key': 'casual_comfortable',
-                     'display_name': 'Casual and Comfortable'},
-
-                    {'key': 'elegant_chic',
-                     'display_name': 'Elegant and Chic'},
-
-                    {'key': 'bohemian_relaxed',
-                     'display_name': 'Bohemian and Relaxed'},
-
-                    {'key': 'edgy_experimental',
-                     'display_name': 'Edgy and Experimental'},
-
-                    {'key': 'none_above', 'display_name': 'None of the above'},
-                ],
-            },
-            'colour_palette': {
-                'question': {
-                    'key': 'colour_palette',
-                    'display_name': 'Describe your colour palette?',
-                },
-                'answers': [
-                    {'key': 'bright_vibrant',
-                     'display_name': 'Bright and Vibrant'},
-
-                    {'key': 'neutral_subdued',
-                     'display_name': 'Neutral and Subdued'},
-
-                    {'key': 'dark_muted', 'display_name': 'Dark and Muted'},
-
-                    {'key': 'pastel_soft', 'display_name': 'Pastel and Soft'},
-
-                    {'key': 'not_attention_colors',
-                     'display_name': "I don't pay much attention to colors"},
-                ],
-            },
-            'shopping_category': {
-                'question': {
-                    'key': 'shopping_category',
-                    'display_name': 'What is your shopping category?',
-                },
-                'answers': [
-                    {'key': 'tops', 'display_name': 'Tops'},
-
-                    {'key': 'bottoms', 'display_name': 'Bottoms'},
-
-                    {'key': 'dresses_jumpsuits',
-                     'display_name': 'Dresses and Jumpsuits'},
-
-                    {'key': 'accessories', 'display_name': 'Accessories'},
-
-                    {'key': 'shoes', 'display_name': 'Shoes'},
-                ],
-            },
-            'type_and_size': {
-                'question': {
-                    'key': 'type_and_size',
-                    'display_name': 'What is your'
-                                    ' type and size of measurements?',
-                },
-                'answers': [
-                    {'key': 'type_uk', 'display_name': 'Type UK'},
-                    {'key': 'type_us', 'display_name': 'Type US'},
-                    {'key': 'type_eu', 'display_name': 'Type EU'},
-                ],
-            },
-            'preference_on_recycling_materials': {
-                'question': {
-                    'key': 'preference_on_recycling_materials',
-                    'display_name': 'What is your preference'
-                                    ' on recycling materials?',
-                },
-                'answers': [
-                    {'key': 'yes', 'display_name': 'Yes'},
-
-                    {'key': 'limited_knowledge',
-                     'display_name': 'Limited knowledge about it.'},
-
-                    {'key': 'not_aware',
-                     'display_name': "Not aware of sustainability efforts."},
-                ],
-                'choices': [
-                    {'key': 'organic_materials',
-                     'display_name': 'Organic Materials'},
-
-                    {'key': 'recycling_materials',
-                     'display_name': 'Recycling Materials'},
-
-                    {'key': 'reuse_water', 'display_name': 'Reuse of Water'},
-
-                    {'key': 'not_sure', 'display_name': 'Not Sure'},
-                ],
-            },
-        },
+        data=serializer.data
     )
 
 
@@ -136,7 +161,12 @@ class ReportSerializer(serializers.ModelSerializer):
 
 @swagger_auto_schema(
     method='POST',
-    operation_description=post_report_description
+    operation_description=post_report_description,
+    operation_id='post_report',
+    request_body=SurveySerializer,
+    operation_summary='Create a Report by submitting Survey Answers',
+    tags=["Report"],
+    responses={200: ReportSerializer()}
 )
 @api_view(['POST'])
 def post_report(request: HttpRequest):
