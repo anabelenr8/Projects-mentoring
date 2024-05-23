@@ -175,8 +175,7 @@ example_request_body = openapi.Schema(
         'type_and_size': openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'size': openapi.Schema(type=openapi.TYPE_INTEGER,
-                                       example=14),
+                'size': openapi.Schema(type=openapi.TYPE_INTEGER, example=14),
                 'type': openapi.Schema(type=openapi.TYPE_STRING,
                                        example="type_us")
             }
@@ -203,13 +202,11 @@ example_request_body = openapi.Schema(
     method='POST',
     operation_description=post_report_description,
     operation_id='post_report',
-    request_body=SurveySerializer,
+    request_body=example_request_body,
     operation_summary='Create a Report by submitting Survey Answers',
     tags=["Report"],
     responses={200: ReportSerializer()},
-    examples={
-        'application/json': example_request_body
-    }
+
 )
 @api_view(['POST'])
 def post_report(request: HttpRequest):
