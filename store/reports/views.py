@@ -1,6 +1,7 @@
 import json
 
 from django.http.request import HttpRequest
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers
 from rest_framework.decorators import api_view
@@ -159,19 +160,43 @@ class ReportSerializer(serializers.ModelSerializer):
         ]
 
 
-example_request_body = {
-    "your_style": "casual_and_comfortable",
-    "colour_palette": "bright_and_vibrant",
-    "shopping_category": ["tops", "bottoms", "accessories"],
-    "type_and_size": {
-        "size": 14,
-        "type": "type_us"
+example_request_body = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'your_style': openapi.Schema(type=openapi.TYPE_STRING,
+                                     example="casual_and_comfortable"),
+        'colour_palette': openapi.Schema(type=openapi.TYPE_STRING,
+                                         example="bright_and_vibrant"),
+        'shopping_category': openapi.Schema(
+            type=openapi.TYPE_ARRAY,
+            items=openapi.Schema(type=openapi.TYPE_STRING),
+            example=["tops", "bottoms", "accessories"]
+        ),
+        'type_and_size': openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'size': openapi.Schema(type=openapi.TYPE_INTEGER,
+                                       example=14),
+                'type': openapi.Schema(type=openapi.TYPE_STRING,
+                                       example="type_us")
+            }
+        ),
+        'preference_on_recycling_materials': openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'answer': openapi.Schema(type=openapi.TYPE_STRING,
+                                         example="yes"),
+                'choices': openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(type=openapi.TYPE_STRING),
+                    example=["use_organic_materials", "recycling_initiatives"]
+                )
+            }
+        )
     },
-    "preference_on_recycling_materials": {
-        "answer": "yes",
-        "choices": ["use_organic_materials", "recycling_initiatives"]
-    }
-}
+    required=['your_style', 'colour_palette', 'shopping_category',
+              'type_and_size', 'preference_on_recycling_materials']
+)
 
 
 @swagger_auto_schema(
