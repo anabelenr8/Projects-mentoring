@@ -32,7 +32,9 @@ class SurveyQuestionSerializer(serializers.Serializer):
 
 @swagger_auto_schema(
     method='GET',
+    tags=["Survey"],
     operation_description=get_report_description,
+    operation_summary='Retrieves Questions and possible Answers',
     operation_id='get_survey_questions',
     responses={200: SurveyQuestionSerializer(many=True)}
 )
