@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 
 import requests
 
-from listings.base import ListingsRequest, hostname
+from store.listings.utils import ListingsRequest, hostname
 
 listings_request = ListingsRequest(
     api_key='mocked-api-key',

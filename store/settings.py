@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'store.reports',
+    'store.listings'
 
 ]
 
@@ -59,7 +60,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
-# change settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
