@@ -1,29 +1,44 @@
-import json
-
 from django.core.management.base import BaseCommand
 
-from store.listings.utils import ListingsRequest
+from listings_api_keys import API_KEY, API_TOKEN
+from store.listings.utils import ListingsRequest, save_to_file
 
 
 class Command(BaseCommand):
-    help = 'Fetch listings from an external API and create a text file'
+    help = 'Fetch listings from an external API and create text files'
 
     def handle(self, *args, **options):
-        api_key = 'your_api_key'  # replace with your actual API key
-        api_token = 'your_api_token'  # replace with your actual API token
+        api_key = API_KEY
+        api_token = API_TOKEN
         hostname = 'https://api.pythonic.me/v1'
 
         listings_request = ListingsRequest(api_key, api_token, hostname)
 
-        # Fetch data using ListingsRequest
-        data = listings_request.get_digital_listings()  # Example method, you can call other methods as needed
+        listings_data = [
+            {
+                'data': listings_request.get_digital_listings(),
+                'filename': 'digital_listings.txt'
+            },
+            {
+                'data': listings_request.get_soft_tag_listings(),
+                'filename': 'soft_tags.txt'
+            },
+            {
+                'data': listings_request.get_usd_listings_under_20(),
+                'filename': 'usd_listings_under_20.txt'
+            },
+            {
+                'data': listings_request.get_blanket_search_listings(),
+                'filename': 'blanket.txt'
+            },
+            {
+                'data': listings_request.get_cotton_eur_listings(),
+                'filename': 'cotton_eur.txt'
+            },
+        ]
 
-        # Define the output file path
-        output_file_path = 'listings_output.txt'
+        for listings in listings_data:
+            save_to_file(listings=listings)
 
-        # Write the data to a text file
-        with open(output_file_path, 'w') as file:
-            file.write(json.dumps(data, indent=4))
-
-        self.stdout.write(self.style.SUCCESS(
-            f'Successfully fetched listings and created {output_file_path}'))
+        self.stdout.write(self.style.SUCCESS('Successfully fetched listings'
+                                             ' and created text files'))

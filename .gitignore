@@ -20,3 +20,4 @@ __pycache__/
 
 *.env
 store.prod.env
+listings_api_keys.py
