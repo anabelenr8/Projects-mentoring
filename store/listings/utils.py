@@ -4,10 +4,10 @@ from typing import Dict, Any, Union, List
 
 import requests
 
-api_key = ''
-api_token = ''
+api_key = os.getenv('API_KEY')
+api_token = os.getenv('API_TOKEN')
 
-api_v1_key = ''
+api_v1_key = os.getenv('API_V1_KEY')
 
 hostname = 'https://api.pythonic.me/v1'
 
