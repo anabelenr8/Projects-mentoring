@@ -32,7 +32,7 @@ viewsets = [
     {
         'prefix': r'api/listings',
         'viewset': ListingViewSet,
-        'basename': 'Listings'
+        'basename': 'listings'
     },
 ]
 

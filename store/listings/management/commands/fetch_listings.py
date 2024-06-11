@@ -1,3 +1,5 @@
+import os
+
 from django.core.management.base import BaseCommand
 
 from store.listings.utils import ListingsRequest, save_to_file
@@ -7,8 +9,8 @@ class Command(BaseCommand):
     help = 'Fetch listings from an external API and create text files'
 
     def handle(self, *args, **options):
-        api_key = ''
-        api_token = ''
+        api_key = os.getenv('API_KEY')
+        api_token = os.getenv('API_TOKEN')
         hostname = 'https://api.pythonic.me/v1'
 
         listings_request = ListingsRequest(api_key, api_token, hostname)

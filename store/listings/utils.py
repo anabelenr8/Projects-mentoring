@@ -84,20 +84,36 @@ class ListingsRequest:
             }
         )
 
+    # def get_usd_listings_under_20(self) -> JsonData:
+    #     usd_listings: JsonData = (
+    #         self.get_listings(
+    #             params={
+    #                 'currency_code': 'usd',
+    #                 'price_amount': 20
+    #             }
+    #         )
+    #     )
+    #     return [
+    #         listing for listing in usd_listings if
+    #         listing.get('currency_code') == 'usd'
+    #         and listing.get('price_amount') is not None
+    #         and float(listing['price_amount']) <= 20.00
+    #     ]
+
     def get_usd_listings_under_20(self) -> JsonData:
-        usd_listings: JsonData = (
-            self.get_listings(
-                params={
-                    'currency_code': 'usd',
-                    'price_amount': 20
-                }
-            )
+        usd_listings: JsonData = self.get_listings(
+            params={
+                'currency_code': 'usd',
+                'price_amount': 20
+            }
         )
+        print("USD Listings:", usd_listings)
         return [
             listing for listing in usd_listings if
-            listing.get('currency_code') == 'usd'
-            and listing.get('price_amount') is not None
-            and float(listing['price_amount']) <= 20.00
+            isinstance(listing, dict) and
+            listing.get('currency_code') == 'usd' and
+            listing.get('price_amount') is not None and
+            float(listing['price_amount']) <= 20.00
         ]
 
     def get_blanket_search_listings(self) -> JsonData:
