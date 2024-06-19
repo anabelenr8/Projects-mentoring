@@ -39,12 +39,8 @@ class ListingsRequest:
 
     def set_headers(self):
         return {
-            'Pythonic-Api-V1-Key': 'ApM8MUgSIFefsHDSSqoVKTHtEvZntOBl'
-                                   'UW7gidnRtfazdFY4YD9EBxS54sdvIfD9N'
-                                   'GASOJsaK2xeyXyZsw9BLw',
-
+            'Pythonic-Api-V1-Key': api_v1_key,
             'X-Api-Key': self.api_key,
-
             'Authorization': f'Bearer {self.api_token}',
         }
 
@@ -65,9 +61,13 @@ class ListingsRequest:
                 headers=self.set_headers(),
                 params=params
             )
-            return res.json()
+            data = res.json()
+            if isinstance(data, dict) and 'detail' in data:
+                print(f"Error: {data['detail']}")
+                return []
+            return data
         except requests.exceptions.RequestException as e:
-            print(f'exception: {e}')
+            print(f'Exception: {e}')
             return []
 
     def get_digital_listings(self) -> JsonData:
@@ -84,36 +84,20 @@ class ListingsRequest:
             }
         )
 
-    # def get_usd_listings_under_20(self) -> JsonData:
-    #     usd_listings: JsonData = (
-    #         self.get_listings(
-    #             params={
-    #                 'currency_code': 'usd',
-    #                 'price_amount': 20
-    #             }
-    #         )
-    #     )
-    #     return [
-    #         listing for listing in usd_listings if
-    #         listing.get('currency_code') == 'usd'
-    #         and listing.get('price_amount') is not None
-    #         and float(listing['price_amount']) <= 20.00
-    #     ]
-
     def get_usd_listings_under_20(self) -> JsonData:
-        usd_listings: JsonData = self.get_listings(
-            params={
-                'currency_code': 'usd',
-                'price_amount': 20
-            }
+        usd_listings: JsonData = (
+            self.get_listings(
+                params={
+                    'currency_code': 'usd',
+                    'price_amount': 20
+                }
+            )
         )
-        print("USD Listings:", usd_listings)
         return [
             listing for listing in usd_listings if
-            isinstance(listing, dict) and
-            listing.get('currency_code') == 'usd' and
-            listing.get('price_amount') is not None and
-            float(listing['price_amount']) <= 20.00
+            listing.get('currency_code') == 'usd'
+            and listing.get('price_amount') is not None
+            and float(listing['price_amount']) <= 20.00
         ]
 
     def get_blanket_search_listings(self) -> JsonData:

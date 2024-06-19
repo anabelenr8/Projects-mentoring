@@ -40,6 +40,3 @@ class Command(BaseCommand):
 
         for listings in listings_data:
             save_to_file(listings=listings)
-
-        self.stdout.write(self.style.SUCCESS('Successfully fetched listings'
-                                             ' and created text files'))
