@@ -57,20 +57,11 @@ class ListingsRequest:
             params: Dict[str, str]
     ) -> JsonData:
         try:
-            headers = self.set_headers()
-
-            print('')
-            print(json.dumps(headers, indent=4))
-            print('')
-
             res: requests.Response = requests.get(
                 url=f'{self.hostname}/listings/',
                 headers=self.set_headers(),
                 params=params
             )
-
-            print('res_status_code ', res.status_code)
-
             data = res.json()
             if isinstance(data, dict) and 'detail' in data:
                 print(f"Error: {data['detail']}")
