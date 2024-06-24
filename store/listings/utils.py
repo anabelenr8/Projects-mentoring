@@ -3,11 +3,7 @@ import os
 from typing import Dict, Any, Union, List
 
 import requests
-
-api_key = os.getenv('API_KEY')
-api_token = os.getenv('API_TOKEN')
-
-api_v1_key = os.getenv('API_V1_KEY')
+from django.conf import settings
 
 hostname = 'https://api.pythonic.me/v1'
 
@@ -39,17 +35,22 @@ class ListingsRequest:
 
     def set_headers(self):
         return {
-            'Pythonic-Api-V1-Key': api_v1_key,
+            'Pythonic-Api-V1-Key': settings.PYTHONIC_API_V1_KEY,
             'X-Api-Key': self.api_key,
             'Authorization': f'Bearer {self.api_token}',
         }
 
-    def create_app(self) -> JsonData:
+    def create_app(self) -> dict[str, str]:
         response = requests.post(
             url=f'{self.hostname}/app/',
-            headers={'Pythonic-Api-V1-Key': api_v1_key}
+            headers={'Pythonic-Api-V1-Key': settings.PYTHONIC_API_V1_KEY}
         )
-        return response.json()
+        response_data = response.json()
+        if response.status_code == 201:
+            return response_data
+        else:
+            print(f"Error creating app: {response_data}")
+            return {}
 
     def get_listings(
             self,
