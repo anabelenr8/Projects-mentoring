@@ -41,9 +41,9 @@ router = SimpleRouter()
 # Step 4: Register URLs
 for viewset in viewsets:
     router.register(
-        prefix=viewset['prefix'],
-        viewset=viewset['viewset'],
-        basename=viewset['basename']
+        prefix=viewset['api/listings'],
+        viewset=viewset['ListingViewSet'],
+        basename=viewset['listings']
     )
 
 urlpatterns = [
