@@ -3,12 +3,12 @@ from unittest.mock import patch, Mock
 import requests
 from django.test import TestCase
 
-from store.listings.utils import ListingsRequest, hostname
+from store.listings.utils import ListingsRequest
 
 listings_request = ListingsRequest(
     api_key='mocked-api-key',
     api_token='mocked-api-token',
-    hostname=hostname
+    hostname='mocked-hostname'
 )
 
 

@@ -1,19 +1,22 @@
+import logging
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from store.listings.utils import ListingsRequest, save_to_file
+from store.listings.models import Listing
+from store.listings.utils import ListingsRequest
+
+logger = logging.getLogger('listings')
 
 
 class Command(BaseCommand):
-    help = 'Fetch listings from an external API and create text files'
+    help = 'Fetch listings from an external API and create db objects'
 
     def handle(self, *args, **options):
-        hostname = 'https://api.pythonic.me/v1'
-
         listings_request = ListingsRequest(
             api_key=settings.PYTHONIC_API_KEY,
             api_token=settings.PYTHONIC_API_TOKEN,
-            hostname=hostname)
+            hostname=settings.PYTHONIC_API_HOSTNAME)
 
         listings_data = [
             {
@@ -37,6 +40,17 @@ class Command(BaseCommand):
                 'filename': 'cotton_eur.txt'
             },
         ]
-
         for listings in listings_data:
-            save_to_file(listings=listings)
+            for listing in listings['data']:
+                listing_object = Listing.objects.create(
+                    title=listing.get('title'),
+                    description=listing.get('description'),
+                    price=listing.get('price'),
+                    currency=listing.get('currency'),
+                    category=listings['category']
+                )
+
+                listing_object.uid = listing.get('listing_id')
+                listing_object.save()
+
+        logger.info('Successfully fetched and saved listings to the database')

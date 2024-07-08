@@ -1,24 +1,11 @@
-import json
-import os
-from typing import Dict, Any, Union, List
+from typing import Dict, Any, List
 
 import requests
 from django.conf import settings
 
-hostname = 'https://api.pythonic.me/v1'
+from store.common.utils import log
 
 JsonData = List[Dict[str, Any]]
-
-
-def save_to_file(listings: Dict[str, Union[JsonData, str]]):
-    directory = 'text_files'
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    filepath = os.path.join(directory, listings['filename'])
-    with open(filepath, 'w') as file:
-        file.write(json.dumps(listings['data'], indent=4))
 
 
 class ListingsRequest:
@@ -49,7 +36,11 @@ class ListingsRequest:
         if response.status_code == 201:
             return response_data
         else:
-            print(f"Error creating app: {response_data}")
+            log(
+                details={
+                    'message': f"Error creating app {response_data}"
+                }
+            )
             return {}
 
     def get_listings(
@@ -64,11 +55,19 @@ class ListingsRequest:
             )
             data = res.json()
             if isinstance(data, dict) and 'detail' in data:
-                print(f"Error: {data['detail']}")
+                log(
+                    details={
+                        'message': f"Error: {data['detail']}"
+                    }
+                )
                 return []
             return data
         except requests.exceptions.RequestException as e:
-            print(f'Exception: {e}')
+            log(
+                details={
+                    'message': f'Exception: {e}'
+                }
+            )
             return []
 
     def get_digital_listings(self) -> JsonData:

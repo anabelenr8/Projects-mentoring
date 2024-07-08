@@ -22,7 +22,7 @@ class ListingSerializer(serializers.ModelSerializer):
 class ListingViewSet(viewsets.ModelViewSet):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
-    lookup_field = 'listing_id'
+    lookup_field = 'uid'
 
     @swagger_auto_schema(
         operation_summary="List all listings",
