@@ -21,36 +21,34 @@ class Command(BaseCommand):
         listings_data = [
             {
                 'data': listings_request.get_digital_listings(),
-                'filename': 'digital_listings.txt'
             },
             {
                 'data': listings_request.get_soft_tag_listings(),
-                'filename': 'soft_tags.txt'
             },
             {
                 'data': listings_request.get_usd_listings_under_20(),
-                'filename': 'usd_listings_under_20.txt'
             },
             {
                 'data': listings_request.get_blanket_search_listings(),
-                'filename': 'blanket.txt'
             },
             {
                 'data': listings_request.get_cotton_eur_listings(),
-                'filename': 'cotton_eur.txt'
             },
         ]
-        for listings in listings_data:
-            for listing in listings['data']:
-                listing_object = Listing.objects.create(
-                    title=listing.get('title'),
-                    description=listing.get('description'),
-                    price=listing.get('price'),
-                    currency=listing.get('currency'),
-                    category=listings['category']
-                )
 
-                listing_object.uid = listing.get('listing_id')
-                listing_object.save()
+        from django.db.transaction import atomic
+        with atomic():
+            for listings in listings_data:
+                for listing in listings['data']:
+                    listing_object = Listing.objects.create(
+                        title=listing.get('title'),
+                        description=listing.get('description'),
+                        price=listing.get('price'),
+                        currency_code=listing.get('currency_code'),
+                        tags=listing.get('tags')
+                    )
 
-        logger.info('Successfully fetched and saved listings to the database')
+                    listing_object.uid = listing.get('listing_id')
+                    listing_object.save()
+
+            logger.info('Successfully fetched and saved listings to the database')
