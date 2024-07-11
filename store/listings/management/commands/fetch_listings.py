@@ -43,7 +43,7 @@ class Command(BaseCommand):
                     listing_object = Listing.objects.create(
                         title=listing.get('title'),
                         description=listing.get('description'),
-                        price=listing.get('price'),
+                        price=listing.get('price_amount'),
                         currency_code=listing.get('currency_code'),
                         tags=listing.get('tags')
                     )
