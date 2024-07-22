@@ -1,5 +1,5 @@
+# store/common/fields.py
 from decimal import Decimal, InvalidOperation
-
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from rest_framework import serializers
@@ -10,7 +10,7 @@ class PriceField(models.IntegerField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('validators', [
             MinValueValidator(1),
-            MaxValueValidator(48000)
+            MaxValueValidator(4800000)
         ])
         super().__init__(*args, **kwargs)
 
@@ -32,3 +32,10 @@ class PriceField(models.IntegerField):
             return int(price_float * 100)
         except (ValueError, InvalidOperation):
             raise serializers.ValidationError('Invalid price format.')
+
+    def get_prep_value(self, value):
+        if isinstance(value, str):
+            value = self.validate_price(value)
+        elif isinstance(value, Decimal):
+            value = int(value * 100)
+        return super().get_prep_value(value)
