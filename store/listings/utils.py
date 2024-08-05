@@ -1,9 +1,28 @@
-from typing import Dict, Any, List
+import json
+import logging
+from typing import Any, List
+from typing import Dict
 
 import requests
 from django.conf import settings
 
-from store.common.utils import log
+logger = logging.getLogger('store-api')
+
+
+def log(details: Dict):
+    """
+    A global logging function
+    Potentially will be extended with more advanced logging functions.
+    """
+    print(json.dumps(details, indent=4))
+
+    if details['level'] == 'error':
+        logger.error(details['message'])
+    elif details['level'] == 'info':
+        logger.info(details['message'])
+    else:
+        logger.debug(details['message'])
+
 
 JsonData = List[Dict[str, Any]]
 

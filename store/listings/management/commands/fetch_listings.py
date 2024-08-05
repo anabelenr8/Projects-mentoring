@@ -2,11 +2,13 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.transaction import atomic
 from rest_framework import serializers
 
 from store.common.fields import PriceField
 from store.listings.models import Listing
 from store.listings.utils import ListingsRequest
+from store.listings.utils import log
 
 logger = logging.getLogger('listings')
 
@@ -38,24 +40,23 @@ class Command(BaseCommand):
             },
         ]
 
-        from django.db.transaction import atomic
         with atomic():
             for listings in listings_data:
                 for listing in listings['data']:
                     uid = listing.get('listing_id')
                     if not uid:
-                        logger.error(f"Missing uid for listing: {listing.get('title')}")
+                        log({'level': 'error', 'message': f"Missing uid for listing: {listing.get('title')}"})
                         continue
 
                     price = listing.get('price_amount')
                     if price is None:
-                        logger.error(f"Missing price for listing: {listing.get('title')}")
+                        log({'level': 'error', 'message': f"Missing price for listing: {listing.get('title')}"})
                         continue
 
                     try:
                         price = PriceField.validate_price(str(price))
                     except serializers.ValidationError as e:
-                        logger.error(f"Invalid price for listing: {listing.get('title')}: {e}")
+                        log({'level': 'error', 'message': f"Invalid price for listing: {listing.get('title')}: {e}"})
                         continue
 
                     try:
@@ -70,10 +71,10 @@ class Command(BaseCommand):
                             }
                         )
                         if created:
-                            logger.info(f"Created new listing: {listing_object.title}")
+                            log({'level': 'info', 'message': f"Created new listing: {listing_object.title}"})
                         else:
-                            logger.info(f"Updated existing listing: {listing_object.title}")
+                            log({'level': 'info', 'message': f"Updated existing listing: {listing_object.title}"})
                     except Exception as e:
-                        logger.error(f"Error saving listing: {e}")
+                        log({'level': 'error', 'message': f"Error saving listing: {e}"})
 
-            logger.info('Successfully fetched and saved listings to the database')
+            log({'level': 'info', 'message': 'Successfully fetched and saved listings to the database'})

@@ -1,8 +1,10 @@
-# store/common/fields.py
 from decimal import Decimal, InvalidOperation
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from rest_framework import serializers
+
+max_price_value = 4800000
 
 
 class PriceField(models.IntegerField):
@@ -10,7 +12,7 @@ class PriceField(models.IntegerField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('validators', [
             MinValueValidator(1),
-            MaxValueValidator(4800000)
+            MaxValueValidator(max_price_value)
         ])
         super().__init__(*args, **kwargs)
 
@@ -23,10 +25,9 @@ class PriceField(models.IntegerField):
     def validate_price(value: str) -> int:
         try:
             price_float = Decimal(value)
-
-            if not (1 <= price_float <= 48000):
+            if not (1 <= price_float <= max_price_value):
                 raise serializers.ValidationError(
-                    'Price must be between 1 and 48000.'
+                    f'Price must be between 1 and {max_price_value}.'
                 )
 
             return int(price_float * 100)
