@@ -45,22 +45,29 @@ class Command(BaseCommand):
                 for listing in listings['data']:
                     uid = listing.get('listing_id')
                     if not uid:
-                        log({'level': 'error', 'message': f"Missing uid for listing: {listing.get('title')}"})
+                        log({'level': 'error',
+                             'message': f"Missing uid for listing:"
+                                        f" {listing.get('title')}"})
                         continue
 
                     price = listing.get('price_amount')
                     if price is None:
-                        log({'level': 'error', 'message': f"Missing price for listing: {listing.get('title')}"})
+                        log({'level': 'error',
+                             'message': f"Missing price for listing:"
+                                        f" {listing.get('title')}"})
                         continue
 
                     try:
                         price = PriceField.validate_price(str(price))
                     except serializers.ValidationError as e:
-                        log({'level': 'error', 'message': f"Invalid price for listing: {listing.get('title')}: {e}"})
+                        log({'level': 'error',
+                             'message': f"Invalid price for listing:"
+                                        f" {listing.get('title')}: {e}"})
                         continue
 
                     try:
-                        listing_object, created = Listing.objects.update_or_create(
+                        listing_object, \
+                            created = Listing.objects.update_or_create(
                             uid=uid,
                             defaults={
                                 'title': listing.get('title'),
@@ -71,10 +78,17 @@ class Command(BaseCommand):
                             }
                         )
                         if created:
-                            log({'level': 'info', 'message': f"Created new listing: {listing_object.title}"})
+                            log({'level': 'info',
+                                 'message': f"Created new listing:"
+                                            f" {listing_object.title}"})
                         else:
-                            log({'level': 'info', 'message': f"Updated existing listing: {listing_object.title}"})
+                            log({'level': 'info',
+                                 'message': f"Updated existing listing:"
+                                            f" {listing_object.title}"})
                     except Exception as e:
-                        log({'level': 'error', 'message': f"Error saving listing: {e}"})
+                        log({'level': 'error',
+                             'message': f"Error saving listing: {e}"})
 
-            log({'level': 'info', 'message': 'Successfully fetched and saved listings to the database'})
+            log({'level': 'info',
+                 'message': 'Successfully fetched'
+                            ' and saved listings to the database'})
