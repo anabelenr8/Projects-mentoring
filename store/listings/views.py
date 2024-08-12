@@ -1,6 +1,7 @@
 from rest_framework import serializers, viewsets
 
 from .models import Listing
+from .utils import swagger_docs
 
 
 class ListingSerializer(serializers.ModelSerializer):
