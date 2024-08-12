@@ -1,22 +1,6 @@
-from typing import Dict
-
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers, viewsets
 
 from .models import Listing
-
-
-def swagger_docs(methods: Dict):
-    def decorator(cls):
-        for method, kwargs in methods.items():
-            original_method = getattr(cls, method, None)
-            if original_method:
-                decorated_method = swagger_auto_schema(**kwargs)(
-                    original_method)
-                setattr(cls, method, decorated_method)
-        return cls
-
-    return decorator
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -47,6 +31,18 @@ listing_methods = {
         'operation_description': "Retrieve a specific listing by ID",
         'tags': ["Listings"],
         'responses': {200: ListingSerializer()}
+    },
+    'create': {
+        'auto_schema': None
+    },
+    'update': {
+        'auto_schema': None
+    },
+    'partial_update': {
+        'auto_schema': None
+    },
+    'destroy': {
+        'auto_schema': None
     }
 }
 

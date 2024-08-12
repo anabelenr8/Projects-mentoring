@@ -1,5 +1,5 @@
 from django.conf.urls.static import static
-from django.urls import path, include
+from django.urls import path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
@@ -28,15 +28,23 @@ schema_view = get_schema_view(
     permission_classes=[permissions.AllowAny]
 )
 
+viewsets = [
+    {
+        'prefix': r'api/listings',
+        'viewset': ListingViewSet,
+        'basename': 'listings'
+    },
+]
 router = SimpleRouter()
-router.register(
-    prefix='listings',
-    viewset=ListingViewSet,
-    basename='listings'
-)
+
+for viewset in viewsets:
+    router.register(
+        prefix=viewset['prefix'],
+        viewset=viewset['viewset'],
+        basename=viewset['basename']
+    )
 
 urlpatterns = [
-    path('api/', include(router.urls)),
     path('api/survey/', get_api_survey_and_answers),
     path('api/report/', post_report, name='post_report_generation'),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0),

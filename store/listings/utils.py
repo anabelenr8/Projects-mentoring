@@ -5,8 +5,22 @@ from typing import Dict
 
 import requests
 from django.conf import settings
+from drf_yasg.utils import swagger_auto_schema
 
 logger = logging.getLogger('store-api')
+
+
+def swagger_docs(methods: Dict):
+    def decorator(cls):
+        for method, kwargs in methods.items():
+            original_method = getattr(cls, method, None)
+            if original_method:
+                decorated_method = swagger_auto_schema(**kwargs)(
+                    original_method)
+                setattr(cls, method, decorated_method)
+        return cls
+
+    return decorator
 
 
 def log(details: Dict):
