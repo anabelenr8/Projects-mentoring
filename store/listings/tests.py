@@ -1,8 +1,10 @@
 from unittest.mock import patch, Mock
 
 import requests
+from django.core.management import call_command
 from django.test import TestCase
 
+from store.listings.models import Listing
 from store.listings.utils import ListingsRequest
 
 listings_request = ListingsRequest(
@@ -295,3 +297,34 @@ class TestListingsRequest(TestCase):
                 'currency_code': 'eur'
             }
         ])
+
+
+class FetchListingsCommandTest(TestCase):
+
+    @patch.object(ListingsRequest, 'get_digital_listings', return_value=[
+        {
+            "listing_id": "1bc5b9dc-b609-4200-8378-d6b3c2271ae5",
+            "title": "Baby Bottles - Probably",
+            "description": "This is a reflect baby bottles."
+                           " Tell a figure girl. ",
+            "price_amount": "1500",
+            "currency_code": "usd",
+            "tags": ["soft", "wool"]
+        }
+    ])
+    @patch.object(ListingsRequest, 'get_cotton_eur_listings', return_value=[])
+    @patch.object(ListingsRequest, 'get_blanket_search_listings',
+                  return_value=[])
+    @patch.object(ListingsRequest, 'get_soft_tag_listings', return_value=[])
+    @patch.object(ListingsRequest, 'get_usd_listings_under_20',
+                  return_value=[])
+    def test_fetch_listings_command(self, mock_digital, mock_cotton,
+                                    mock_blanket, mock_soft, mock_usd):
+        call_command('fetch_listings')
+
+        listing = Listing.objects.get(
+            uid="1bc5b9dc-b609-4200-8378-d6b3c2271ae5")
+        self.assertEqual(listing.title, "Baby Bottles - Probably")
+        self.assertEqual(listing.price, 150000)
+        self.assertEqual(listing.currency_code, "usd")
+        self.assertEqual(listing.tags, ["soft", "wool"])
