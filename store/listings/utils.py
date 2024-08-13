@@ -1,28 +1,44 @@
 import json
-import os
-from typing import Dict, Any, Union, List
+import logging
+from typing import Any, List
+from typing import Dict
 
 import requests
+from django.conf import settings
+from drf_yasg.utils import swagger_auto_schema
 
-api_key = ''
-api_token = ''
+logger = logging.getLogger('store-api')
 
-api_v1_key = ''
 
-hostname = 'https://api.pythonic.me/v1'
+def swagger_docs(methods: Dict):
+    def decorator(cls):
+        for method, kwargs in methods.items():
+            original_method = getattr(cls, method, None)
+            if original_method:
+                decorated_method = swagger_auto_schema(**kwargs)(
+                    original_method)
+                setattr(cls, method, decorated_method)
+        return cls
+
+    return decorator
+
+
+def log(details: Dict):
+    """
+    A global logging function
+    Potentially will be extended with more advanced logging functions.
+    """
+    print(json.dumps(details, indent=4))
+
+    if details['level'] == 'error':
+        logger.error(details['message'])
+    elif details['level'] == 'info':
+        logger.info(details['message'])
+    else:
+        logger.debug(details['message'])
+
 
 JsonData = List[Dict[str, Any]]
-
-
-def save_to_file(listings: Dict[str, Union[JsonData, str]]):
-    directory = 'text_files'
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    filepath = os.path.join(directory, listings['filename'])
-    with open(filepath, 'w') as file:
-        file.write(json.dumps(listings['data'], indent=4))
 
 
 class ListingsRequest:
@@ -39,21 +55,26 @@ class ListingsRequest:
 
     def set_headers(self):
         return {
-            'Pythonic-Api-V1-Key': 'ApM8MUgSIFefsHDSSqoVKTHtEvZntOBl'
-                                   'UW7gidnRtfazdFY4YD9EBxS54sdvIfD9N'
-                                   'GASOJsaK2xeyXyZsw9BLw',
-
+            'Pythonic-Api-V1-Key': settings.PYTHONIC_API_V1_KEY,
             'X-Api-Key': self.api_key,
-
             'Authorization': f'Bearer {self.api_token}',
         }
 
-    def create_app(self) -> JsonData:
+    def create_app(self) -> dict[str, str]:
         response = requests.post(
             url=f'{self.hostname}/app/',
-            headers={'Pythonic-Api-V1-Key': api_v1_key}
+            headers={'Pythonic-Api-V1-Key': settings.PYTHONIC_API_V1_KEY}
         )
-        return response.json()
+        response_data = response.json()
+        if response.status_code == 201:
+            return response_data
+        else:
+            log(
+                details={
+                    'message': f"Error creating app {response_data}"
+                }
+            )
+            return {}
 
     def get_listings(
             self,
@@ -65,9 +86,21 @@ class ListingsRequest:
                 headers=self.set_headers(),
                 params=params
             )
-            return res.json()
+            data = res.json()
+            if isinstance(data, dict) and 'detail' in data:
+                log(
+                    details={
+                        'message': f"Error: {data['detail']}"
+                    }
+                )
+                return []
+            return data
         except requests.exceptions.RequestException as e:
-            print(f'exception: {e}')
+            log(
+                details={
+                    'message': f'Exception: {e}'
+                }
+            )
             return []
 
     def get_digital_listings(self) -> JsonData:

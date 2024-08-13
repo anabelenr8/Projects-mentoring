@@ -26,13 +26,13 @@ sudo -i -u postgres psql
 # Change "projectname_*" prefix to fit your project
 # !!! Don't keep your passwords in this file
 # !!! only in secure notes / 1Password App
-CREATE ROLE projectname_api WITH LOGIN PASSWORD;
+CREATE ROLE store_api WITH LOGIN PASSWORD;
 
-ALTER ROLE projectname_api CREATEDB;
+ALTER ROLE store_api CREATEDB;
 
-CREATE DATABASE projectname_api_db;
+CREATE DATABASE store_api_db;
 
-GRANT ALL PRIVILEGES ON DATABASE projectname_api_db TO projectname_api;
+GRANT ALL PRIVILEGES ON DATABASE store_api_db TO store_api;
 
 # Pipenv setup
 apt install python3-pip -y

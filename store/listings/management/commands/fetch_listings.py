@@ -1,44 +1,77 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.transaction import atomic
+from rest_framework import serializers
 
-from listings_api_keys import API_KEY, API_TOKEN
-from store.listings.utils import ListingsRequest, save_to_file
+from store.common.fields import PriceField
+from store.listings.models import Listing
+from store.listings.utils import ListingsRequest, log
 
 
 class Command(BaseCommand):
-    help = 'Fetch listings from an external API and create text files'
+    help = 'Fetch listings from an external API and create db objects'
 
     def handle(self, *args, **options):
-        api_key = API_KEY
-        api_token = API_TOKEN
-        hostname = 'https://api.pythonic.me/v1'
+        listings_request = ListingsRequest(
+            api_key=settings.PYTHONIC_API_KEY,
+            api_token=settings.PYTHONIC_API_TOKEN,
+            hostname=settings.PYTHONIC_API_HOSTNAME)
 
-        listings_request = ListingsRequest(api_key, api_token, hostname)
+        data = []
+        data.extend(listings_request.get_digital_listings())
+        data.extend(listings_request.get_cotton_eur_listings())
+        data.extend(listings_request.get_blanket_search_listings())
+        data.extend(listings_request.get_soft_tag_listings())
+        data.extend(listings_request.get_usd_listings_under_20())
 
-        listings_data = [
-            {
-                'data': listings_request.get_digital_listings(),
-                'filename': 'digital_listings.txt'
-            },
-            {
-                'data': listings_request.get_soft_tag_listings(),
-                'filename': 'soft_tags.txt'
-            },
-            {
-                'data': listings_request.get_usd_listings_under_20(),
-                'filename': 'usd_listings_under_20.txt'
-            },
-            {
-                'data': listings_request.get_blanket_search_listings(),
-                'filename': 'blanket.txt'
-            },
-            {
-                'data': listings_request.get_cotton_eur_listings(),
-                'filename': 'cotton_eur.txt'
-            },
-        ]
+        with atomic():
+            for listing in data:
+                uid = listing.get('listing_id')
+                if not uid:
+                    log({'level': 'error',
+                         'message': f"Missing uid for listing:"
+                                    f" {listing.get('title')}"})
+                    continue
 
-        for listings in listings_data:
-            save_to_file(listings=listings)
+                price = listing.get('price_amount')
+                if price is None:
+                    log({'level': 'error',
+                         'message': f"Missing price for listing:"
+                                    f" {listing.get('title')}"})
+                    continue
 
-        self.stdout.write(self.style.SUCCESS('Successfully fetched listings'
-                                             ' and created text files'))
+                try:
+                    price = PriceField.validate_price(str(price))
+                except serializers.ValidationError as e:
+                    log({'level': 'error',
+                         'message': f"Invalid price for listing:"
+                                    f" {listing.get('title')}: {e}"})
+                    continue
+
+                try:
+                    listing_object, \
+                        created = Listing.objects.update_or_create(
+                        uid=uid,
+                        defaults={
+                            'title': listing.get('title'),
+                            'description': listing.get('description'),
+                            'price': price,
+                            'currency_code': listing.get('currency_code'),
+                            'tags': listing.get('tags'),
+                        }
+                    )
+                    if created:
+                        log({'level': 'info',
+                             'message': f"Created new listing:"
+                                        f" {listing_object.title}"})
+                    else:
+                        log({'level': 'info',
+                             'message': f"Updated existing listing:"
+                                        f" {listing_object.title}"})
+                except Exception as e:
+                    log({'level': 'error',
+                         'message': f"Error saving listing: {e}"})
+
+            log({'level': 'info',
+                 'message': 'Successfully fetched'
+                            ' and saved listings to the database'})
