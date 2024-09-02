@@ -37,6 +37,16 @@ listing_methods = {
         'operation_description': "Retrieve a list of all "
                                  "listings in the database",
         'tags': ["Listings"],
+        'parameters': [
+            openapi.Parameter(
+                'uid',
+                openapi.IN_PATH,
+                description="UUID of the listing",
+                type=openapi.TYPE_STRING,
+                required=True,
+                example="e.g., '9b8f4f2c-8097-4b5e-9d2c-928d5fcf5c6b'"
+            ),
+        ],
         'responses': {
             200: openapi.Response(
                 description="A list of listings",
@@ -57,7 +67,8 @@ listing_methods = {
                 examples={
                     "application/json": example_listing_response
                 },
-                schema=ListingSerializer()
+                schema=ListingSerializer(),
+
             )
         }
     },
