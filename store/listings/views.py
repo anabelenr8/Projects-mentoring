@@ -58,7 +58,7 @@ listing_methods = {
                 description="UUID of the listing",
                 type=openapi.TYPE_STRING,
                 required=True,
-                example="9b8f4f2c-8097-4b5e-9d2c-928d5fcf5c6b"
+                default="9b8f4f2c-8097-4b5e-9d2c-928d5fcf5c6b"
             ),
         ],
         'responses': {
