@@ -34,19 +34,9 @@ class ListingSerializer(serializers.ModelSerializer):
 listing_methods = {
     'list': {
         'operation_summary': "List all listings",
-        'operation_description': "Retrieve a list of all "
-                                 "listings in the database",
+        'operation_description': "Retrieve a list"
+                                 " of all listings in the database",
         'tags': ["Listings"],
-        'parameters': [
-            openapi.Parameter(
-                'uid',
-                openapi.IN_PATH,
-                description="UUID of the listing",
-                type=openapi.TYPE_STRING,
-                required=True,
-                example="e.g., '9b8f4f2c-8097-4b5e-9d2c-928d5fcf5c6b'"
-            ),
-        ],
         'responses': {
             200: openapi.Response(
                 description="A list of listings",
@@ -61,6 +51,16 @@ listing_methods = {
         'operation_summary': "Retrieve a listing",
         'operation_description': "Retrieve a specific listing by ID",
         'tags': ["Listings"],
+        'parameters': [
+            openapi.Parameter(
+                'uid',
+                openapi.IN_PATH,
+                description="UUID of the listing",
+                type=openapi.TYPE_STRING,
+                required=True,
+                example="9b8f4f2c-8097-4b5e-9d2c-928d5fcf5c6b"
+            ),
+        ],
         'responses': {
             200: openapi.Response(
                 description="A single listing",
@@ -68,7 +68,6 @@ listing_methods = {
                     "application/json": example_listing_response
                 },
                 schema=ListingSerializer(),
-
             )
         }
     },
